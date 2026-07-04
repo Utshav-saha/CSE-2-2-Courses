@@ -1,0 +1,19 @@
+FOODFLOW RECEIPT
+------------------------------------------------------------------------
+Order ID: FF-1001
+Customer: Sample Family (01711111111)
+Type: DELIVERY
+Address: House 25, Road 4, Dhanmondi
+Payment: MOBILE_BANKING
+------------------------------------------------------------------------
+2x Chicken Pizza        LARGE, extra cheese, note: half spicy  1794.00    1794.00
+3x Cheese Burger        MEDIUM, extra cheese, spicy       1200.00    1200.00
+4x Lassi                MEDIUM, note: less sugar           640.00     640.00
+2x Nuggets              LARGE, spicy                       648.00     648.00
+------------------------------------------------------------------------
+Subtotal:                    4282.00
+Service charges:              200.00
+Discount:                     692.30
+Total:                       3789.70
+Instructions: Deliver together
+

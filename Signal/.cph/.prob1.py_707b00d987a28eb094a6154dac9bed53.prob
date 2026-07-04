@@ -1,0 +1,1 @@
+{"name":"Local: prob1","url":"/Users/utshavsaha/Documents/Signal/prob1.py","tests":[{"id":1783174326284,"input":"7\nAlice 5 30\nBob 3 20\nAlice 4 25\nCharlie 7 15\nBob 6 40\nCharlie 2 30\nAlice 3 20","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/Users/utshavsaha/Documents/Signal/prob1.py","group":"local","local":true}
