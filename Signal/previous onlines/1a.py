@@ -41,7 +41,7 @@ def time_scale(
     Time sub-scaling:
         y(t) = x(t / k)
     """
-    return interpolate_signal(t, x, t / k)
+    return interpolate_signal(t*k, t, x)
 
 
 def plot_pair(t: np.ndarray, x: np.ndarray, y: np.ndarray, title: str):
