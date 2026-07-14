@@ -1,0 +1,307 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[margin=1in]{geometry} 
+\usepackage{lipsum} % for vugijugi lekha
+\usepackage{subcaption} % side by side pic
+\usepackage{enumitem} % For nested list
+\usepackage{array, multicol, multirow}
+\usepackage[table]{xcolor}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage[numbers]{natbib}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[normalem]{ulem} %for strikethrough
+
+
+
+% Define custom colors for syntax highlighting
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Configure the listings package
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\setlength{\tabcolsep}{18pt} % Gap before text starts
+\renewcommand{\arraystretch}{1.5} % Scale cell height
+\setlength{\arrayrulewidth}{0.5mm} % border width
+\arrayrulecolor{blue}
+
+\hypersetup{
+colorlinks = blue,
+linkcolor = blue
+}
+
+\title{\textbf{\LaTeX} tutorial}
+\author{Utshav Saha}
+\date{June 2026}
+
+\newcommand\kw[1]{\textbf{\itshape #1}}
+
+\begin{document}
+
+\maketitle % title er jinispati dekhate
+
+\tableofcontents
+
+\newpage
+\section{Introduction}
+This is a
+new document\footnote{with a footnote}
+
+Some text with \emph{emphasis and \emph{nested} content}
+
+Some text with \textit{italic and \textit{nested} content}
+
+Some text with \textbf{italic and \textit{nested} content}
+
+Something about \kw{apples} and \kw{oranges}.
+
+\textcolor{red}{A colored text}
+\sout{A strike through line}
+
+
+\section{Title of the first section}
+
+Text of material in the first section
+
+Double newline for a new paragraph.
+
+Third paragraph.
+
+
+\subsection{Subsection of the first section}
+
+Text of material in the subsection.
+
+\section{Now we will learn about lists}
+
+Lists are of two kinds - ordered and unordered
+\vspace{2\baselineskip}
+
+
+Ordered List
+\begin{enumerate}
+    \item Bus 
+    \item Truck
+    \item Plane
+\end{enumerate}
+\vspace{2\baselineskip}
+
+Unordered List
+\begin{itemize}
+    \item[!] Apple
+    \item[-] Banana
+    \item Orange
+\end{itemize}
+
+\vspace{2\baselineskip}
+
+Nested List
+\begin{enumerate}[label=(\roman*)]
+  \item An entry
+  \item Another One \begin{enumerate}
+  \item this is at a 
+  \item this is at b
+  \end{enumerate}
+  \item Wow! Three entries
+\end{enumerate}
+
+
+\begin{description}
+    \item[Dog:]  member of the genus Canis, which forms part of the wolf-like canids,
+  and is the most widely abundant terrestrial carnivore.
+\end{description}
+
+\newpage
+\section{Playing with images}
+\lipsum[1-2]
+
+\vspace{2\baselineskip}
+Figure types
+\begin{itemize}
+    \item \emph{\textbf{h}} ‘Here’ (if possible)
+    \item \emph{\textbf{t}} Top of the page
+    \item \emph{\textbf{b}} Bottom of the page
+    \item \emph{\textbf{f}} A dedicated page only for floats
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    % First Image
+    \begin{subfigure}[b]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{cat3.jpg}
+        \caption{hapi billu}
+        \label{fig:cat3}
+    \end{subfigure}
+    \hspace{1 cm}
+    % Second Image
+    \begin{subfigure}[b]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{cat2.png}
+        \caption{sad billu}
+        \label{fig:cat2}
+    \end{subfigure}
+
+    \caption{Two states of Billu} % Optional: Main caption for both images
+    \label{fig:both_cats}         % Optional: Main label
+\end{figure}
+\vspace{2\baselineskip}
+
+In Figure~\ref{fig:cat2}, we can a sad billu and in Figure~\ref{fig:cat3}, we can a hapi billu and .
+\\This is a new line. 
+
+\vspace{2\baselineskip}
+
+\lipsum[2-3]
+\subsection{Wrapped Figure}
+\begin{wrapfigure}{r}{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.5\linewidth]{cat1.jpg}
+    \caption{Caption}
+    \label{fig:placeholder}
+\end{wrapfigure}
+\lipsum[2-3]
+
+\section{Text size niye gutaguti}
+
+{\tiny Ar vallagenaa porashuna korte :( }
+
+{\small Ar vallagenaa porashuna korte :( }
+
+{\large Ar vallagenaa porashuna korte :( }
+
+{\Large Ar vallagenaa porashuna korte :( }
+
+{\LARGE Ar vallagenaa porashuna korte :( }
+
+{\huge Ar vallagenaa porashuna korte :( }
+
+{\Huge Ar vallagenaa porashuna korte :( }
+
+\section{Cholo Table banai (onek pera)}
+\begin{tabular}{|l|m{3cm}|}
+    \hline
+   % This  & \parbox{3cm}{is rather long \\ new paragraph} \\ \hline
+   This & is  \\ \hline
+    a & table and it has a really really really really long text\\ \hline
+\end{tabular}
+
+\subsection{Aro complicated table}
+\begin{tabular}{|c|c|c|}
+\hline
+    \multicolumn{3}{|c|}{This is a multi column} \\ \hline
+    \rowcolor{yellow!50}1 & 2 &\cellcolor{black!10} 3 \\ \hline
+    \multirow{2}{2cm}{A multi row} & 5 & 6 \\ 
+     & 8 & 9 \\ \hline
+\end{tabular}
+
+\section{Cholo Math kori}
+\begin{enumerate}
+\item Let's begin with a formula $e^{i\pi} + 1 = 0$ But we can also do
+
+$$ e = \lim_{n\to\infty} \left(1+\frac{1}{n}\right)^n = \lim_{n\to\infty}\frac{n}{\sqrt[n]{n!}}$$
+
+\item We can do another:
+
+$$ e = \sum_{n=0}^{\infty}\frac{1}{n!}$$
+
+\item More Formulas:
+
+$$  \vec{v} = <v_1,v_2,v_3>$$
+
+$$\vec{v}\cdot \vec{w}$$
+
+$$\begin{bmatrix}
+    1 & 2 & 3 \\
+    4 & 5 & 6
+\end{bmatrix}$$
+
+\item We want to write the solution for the quadratic equation $$\alpha x^2 + bx + c = 0$$. 
+
+The solution is 
+$$ x = \frac{1}{2\alpha} \times \left(-b + \sqrt{-b^2 \pm 4\cdot \alpha \cdot c}\right) $$
+
+But there are two solutions actually.
+\begin{align*}
+ x_1 & = \frac{1}{2\alpha} \times \left(-b + \sqrt{-b^2 + 4\cdot \alpha \cdot c}\right)  \\ 
+ x_2 & = \frac{1}{2\alpha} \times \left(-b - \sqrt{-b^2 - 4\cdot \alpha \cdot c}\right) \\
+ & = \frac{-b - \sqrt{-b^2 - 4 \alpha c}}{2a}
+\end{align*}
+\end{enumerate}
+
+\section{Hyperlinks}
+Visit \href{www.google.com}{Google} for more information
+
+\section{Pseudocode}
+\begin{algorithm}[ht]
+\caption{Calculate Factorial}
+\label{alg:factorial}
+\begin{algorithmic}[1] % The [1] adds line numbers to every line
+    \Require $n \geq 0$
+    \Ensure Returns $n!$
+    
+    \State $result \gets 1$
+    
+    \If{$n = 0$ \textbf{or} $n = 1$}
+        \State \Return $result$
+    \EndIf
+    
+    \While{$n > 1$}
+        \State $result \gets result \times n$
+        \State $n \gets n - 1$
+    \EndWhile
+    
+    \State \Return $result$
+\end{algorithmic}
+\end{algorithm}
+
+\section{Code Snippet}
+\begin{lstlisting}[language=Python, caption=A simple Python function]
+def calculate_fibonacci(n):
+    """Calculate the nth Fibonacci number."""
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return calculate_fibonacci(n-1) + calculate_fibonacci(n-2)
+
+print(calculate_fibonacci(10))
+\end{lstlisting}
+
+\section{Citation Examples}
+
+I am citing an example work, \cite{vaswani2017attention, 10.1093/bioinformatics/btu462}
+
+% \nocite{}
+
+\citet{vaswani2017attention} introduced transformers in \citeyear{vaswani2017attention}
+
+\bibliographystyle{plainnat}
+\bibliography{biblio}
+\end{document}
+

@@ -1,0 +1,904 @@
+%=====================================================================
+%  MASTER FILE — merged from main.tex + a2.tex + c2.tex
+%  Utshav Saha (2305077)
+%  Original section names / captions preserved verbatim.
+%=====================================================================
+\documentclass[11pt,a4paper]{article}
+
+%---------------------------------------------------------------------
+% PACKAGES (union of all three files + new additions)
+%---------------------------------------------------------------------
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}          % images
+\usepackage{caption}           % \captionof outside floats
+\usepackage{subcaption}        % side by side pic
+\usepackage{wrapfig}           % wrapped figure
+\usepackage{float}             % H float specifier
+\usepackage{lipsum}            % for vugijugi lekha
+
+\usepackage{amsmath, amssymb, amsthm}   % math + theorems
+\usepackage{mathtools}         % \DeclarePairedDelimiter, \coloneqq
+\usepackage{cancel}            % strike-out inside math
+\usepackage{siunitx}           % units
+\usepackage{bm}                % bold math
+
+\usepackage[inline]{enumitem}  % nested/custom lists + inline lists
+\usepackage{array, multicol, multirow}
+\usepackage{booktabs}          % pro-looking rules
+\usepackage{longtable}         % multi-page table
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[normalem]{ulem}    % for strikethrough
+\usepackage{tcolorbox}         % boxed notes
+\usepackage{fancyhdr}          % headers/footers
+\usepackage[numbers]{natbib}
+\usepackage{hyperref}          % load late
+
+%---------------------------------------------------------------------
+% CUSTOM MARGIN ENVIRONMENT (from a2.tex)
+%---------------------------------------------------------------------
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+%---------------------------------------------------------------------
+% COLORS + LISTINGS CONFIG (from main.tex)
+%---------------------------------------------------------------------
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+%---------------------------------------------------------------------
+% TABLE STYLING (from main.tex)
+%---------------------------------------------------------------------
+\setlength{\tabcolsep}{10pt}         % gap before text starts
+\renewcommand{\arraystretch}{1.4}    % scale cell height
+\setlength{\arrayrulewidth}{0.4mm}   % border width
+\arrayrulecolor{blue}
+
+%---------------------------------------------------------------------
+% HYPERREF SETUP
+%---------------------------------------------------------------------
+\hypersetup{
+    colorlinks = true,
+    linkcolor  = blue,
+    citecolor  = teal,
+    urlcolor   = magenta
+}
+
+%---------------------------------------------------------------------
+% CUSTOM COMMANDS / OPERATORS  (NEW)
+%---------------------------------------------------------------------
+\newcommand\kw[1]{\textbf{\itshape #1}}          % from main.tex
+\newcommand{\R}{\mathbb{R}}                       % blackboard R
+\newcommand{\Ex}[1]{\mathbb{E}\!\left[#1\right]}  % expectation
+\newcommand{\dd}[2]{\frac{\partial #1}{\partial #2}} % partial deriv
+\DeclareMathOperator*{\argmin}{arg\,min}          % new operator
+\DeclareMathOperator{\sinc}{sinc}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}     % \abs{x}, \abs*{x}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+%---------------------------------------------------------------------
+% THEOREM ENVIRONMENTS  (NEW)
+%---------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+%---------------------------------------------------------------------
+% HEADER / FOOTER  (NEW)
+%---------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\LaTeX{} Master Compilation}
+\rhead{Utshav Saha (2305077)}
+\cfoot{\thepage}
+
+%---------------------------------------------------------------------
+\title{\textbf{\LaTeX} tutorial \\[0.4em]
+       \large Mathematical Foundations of Image Synthesis \\
+       \large CSE200: Online-1 on \LaTeX}
+\author{Utshav Saha (2305077)}
+\date{July 2026}
+
+\begin{document}
+
+\maketitle % title er jinispati dekhate
+
+\begin{abstract}
+\noindent This single document merges three earlier submissions: the \LaTeX{}
+tutorial, the image-synthesis article, and the CSE200 online test. Beyond the
+original content, it demonstrates additional machinery: theorem environments,
+matrices, \texttt{booktabs} and \texttt{longtable}, \texttt{siunitx} units,
+paired delimiters, custom operators, boxed notes, minipages, and multicolumn
+text.
+\end{abstract}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\newpage
+
+%=====================================================================
+\part*{Part I --- \LaTeX{} Tutorial}
+\addcontentsline{toc}{section}{Part I --- \LaTeX{} Tutorial}
+%=====================================================================
+
+\section{Introduction}
+This is a
+new document\footnote{with a footnote}
+
+Some text with \emph{emphasis and \emph{nested} content}
+
+Some text with \textit{italic and \textit{nested} content}
+
+Some text with \textbf{italic and \textit{nested} content}
+
+Something about \kw{apples} and \kw{oranges}.
+
+\textcolor{red}{A colored text}
+\sout{A strike through line}
+
+\section{Title of the first section}
+
+Text of material in the first section
+
+Double newline for a new paragraph.
+
+Third paragraph.
+
+\subsection{Subsection of the first section}
+
+Text of material in the subsection.
+
+\section{Now we will learn about lists}
+
+Lists are of two kinds - ordered and unordered
+\vspace{2\baselineskip}
+
+Ordered List
+\begin{enumerate}
+    \item Bus
+    \item Truck
+    \item Plane
+\end{enumerate}
+\vspace{2\baselineskip}
+
+Unordered List
+\begin{itemize}
+    \item[!] Apple
+    \item[-] Banana
+    \item Orange
+\end{itemize}
+
+\vspace{2\baselineskip}
+
+Nested List
+\begin{enumerate}[label=(\roman*)]
+  \item An entry
+  \item Another One \begin{enumerate}
+  \item this is at a
+  \item this is at b
+  \end{enumerate}
+  \item Wow! Three entries
+\end{enumerate}
+
+\begin{description}
+    \item[Dog:]  member of the genus Canis, which forms part of the wolf-like canids,
+  and is the most widely abundant terrestrial carnivore.
+\end{description}
+
+\subsection{Extra list tricks (new)}
+\texttt{enumitem} can compress spacing, restart counters, and set custom labels.
+
+\begin{enumerate}[label=\textbf{Step \arabic*.}, leftmargin=*, itemsep=0pt]
+  \item Load the scene description.
+  \item Build the acceleration structure.
+  \item Shade and write to the framebuffer.
+\end{enumerate}
+
+An inline list is also possible:
+\begin{enumerate*}[label=(\alph*)]
+  \item read,
+  \item transform,
+  \item write.
+\end{enumerate*}
+
+\newpage
+\section{Playing with images}
+\lipsum[1]
+
+\vspace{2\baselineskip}
+Figure types
+\begin{itemize}
+    \item \emph{\textbf{h}} ‘Here’ (if possible)
+    \item \emph{\textbf{t}} Top of the page
+    \item \emph{\textbf{b}} Bottom of the page
+    \item \emph{\textbf{f}} A dedicated page only for floats
+    \item \emph{\textbf{H}} Exactly here, no floating (needs \texttt{float})
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    % First Image
+    \begin{subfigure}[b]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{cat3.jpg}
+        \caption{hapi billu}
+        \label{fig:cat3}
+    \end{subfigure}
+    \hspace{1 cm}
+    % Second Image
+    \begin{subfigure}[b]{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{cat2.png}
+        \caption{sad billu}
+        \label{fig:cat2}
+    \end{subfigure}
+
+    \caption{Two states of Billu} % Optional: Main caption for both images
+    \label{fig:both_cats}         % Optional: Main label
+\end{figure}
+\vspace{2\baselineskip}
+
+In Figure~\ref{fig:cat2}, we can a sad billu and in Figure~\ref{fig:cat3}, we can a hapi billu and .
+\\This is a new line.
+
+\vspace{2\baselineskip}
+
+\lipsum[2]
+
+\subsection{Wrapped Figure}
+\begin{wrapfigure}{r}{0.5\linewidth}
+    \centering
+    \includegraphics[width=0.5\linewidth]{cat1.jpg}
+    \caption{Caption}
+    \label{fig:placeholder}
+\end{wrapfigure}
+\lipsum[2-3]
+
+\subsection{Side-by-side minipages (new)}
+Two \texttt{minipage}s let you place a figure and its explanation next to each
+other without a \texttt{subfigure}.
+
+\noindent
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{0pt}
+\centering
+\includegraphics[width=\linewidth]{cat1.jpg}
+\captionof{figure}{A minipage-hosted billu}
+\label{fig:mini}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\vspace{0pt}
+The left minipage carries an image; this right one carries text. Both are boxes
+of a fixed width, aligned by their top edges (\texttt{[t]}). This is the usual
+way to build a two-column comparison inside an otherwise one-column document.
+\end{minipage}
+
+\section{Text size niye gutaguti}
+
+{\tiny Ar vallagenaa porashuna korte :( }
+
+{\small Ar vallagenaa porashuna korte :( }
+
+{\large Ar vallagenaa porashuna korte :( }
+
+{\Large Ar vallagenaa porashuna korte :( }
+
+{\LARGE Ar vallagenaa porashuna korte :( }
+
+{\huge Ar vallagenaa porashuna korte :( }
+
+{\Huge Ar vallagenaa porashuna korte :( }
+
+\subsection{Text Emphasis and Fonts}
+This sentence contains \textbf{bold text}, \textit{italic text}, \emph{emphasized text}, and \underline{underlined text}. Font sizes can also vary such as {\Large Large text}, {\small small text}, and {\Huge huge text}.
+
+\subsection{Font families and shapes (new)}
+\textrm{Roman family}, \textsf{Sans-serif family}, \texttt{Typewriter family},
+\textsc{Small Caps Shape}, \textsl{Slanted shape}, \uline{ulem underline},
+\uwave{wavy underline}, \xout{crossed out}.
+
+\section{Cholo Table banai (onek pera)}
+\begin{tabular}{|l|m{3cm}|}
+    \hline
+   % This  & \parbox{3cm}{is rather long \\ new paragraph} \\ \hline
+   This & is  \\ \hline
+    a & table and it has a really really really really long text\\ \hline
+\end{tabular}
+
+\subsection{Aro complicated table}
+\begin{tabular}{|c|c|c|}
+\hline
+    \multicolumn{3}{|c|}{This is a multi column} \\ \hline
+    \rowcolor{yellow!50}1 & 2 &\cellcolor{black!10} 3 \\ \hline
+    \multirow{2}{2cm}{A multi row} & 5 & 6 \\
+     & 8 & 9 \\ \hline
+\end{tabular}
+
+\subsection{Booktabs table (new)}
+Professional tables avoid vertical rules and use \verb|\toprule|,
+\verb|\midrule|, \verb|\bottomrule|.
+
+\begin{table}[H]
+\centering
+\arrayrulecolor{black}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Renderer} & \textbf{Frames/s} & \textbf{Memory (\si{\mega\byte})} \\
+\midrule
+Rasterizer      & 240 & 128 \\
+Path tracer     &   4 & 512 \\
+Hybrid          &  60 & 320 \\
+\midrule
+\textbf{Mean}   & \textbf{101.3} & \textbf{320.0} \\
+\bottomrule
+\end{tabular}
+\arrayrulecolor{blue}
+\caption{A clean \texttt{booktabs} table}
+\label{tab:booktabs}
+\end{table}
+
+\subsection{Longtable, spanning pages (new)}
+\begin{longtable}{|c|l|c|}
+\hline
+\textbf{ID} & \textbf{Primitive} & \textbf{Cost} \\ \hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{Primitive} & \textbf{Cost} \\ \hline
+\endhead
+\hline \multicolumn{3}{|r|}{\emph{continued on next page}} \\ \hline
+\endfoot
+\hline
+\endlastfoot
+1 & Sphere    & $O(1)$ \\ \hline
+2 & Triangle  & $O(1)$ \\ \hline
+3 & BVH node  & $O(\log n)$ \\ \hline
+4 & Mesh      & $O(n)$ \\ \hline
+5 & Volume    & $O(n^{3})$ \\ \hline
+\caption{A \texttt{longtable} that can break across pages}
+\label{tab:longtable}
+\end{longtable}
+
+\section{Cholo Math kori}
+\begin{enumerate}
+\item Let's begin with a formula $e^{i\pi} + 1 = 0$ But we can also do
+
+$$ e = \lim_{n\to\infty} \left(1+\frac{1}{n}\right)^n = \lim_{n\to\infty}\frac{n}{\sqrt[n]{n!}}$$
+
+\item We can do another:
+
+$$ e = \sum_{n=0}^{\infty}\frac{1}{n!}$$
+
+\item More Formulas:
+
+$$  \vec{v} = <v_1,v_2,v_3>$$
+
+$$\vec{v}\cdot \vec{w}$$
+
+$$\begin{bmatrix}
+    1 & 2 & 3 \\
+    4 & 5 & 6
+\end{bmatrix}$$
+
+\item We want to write the solution for the quadratic equation $$\alpha x^2 + bx + c = 0$$.
+
+The solution is
+$$ x = \frac{1}{2\alpha} \times \left(-b + \sqrt{-b^2 \pm 4\cdot \alpha \cdot c}\right) $$
+
+But there are two solutions actually.
+\begin{align*}
+ x_1 & = \frac{1}{2\alpha} \times \left(-b + \sqrt{-b^2 + 4\cdot \alpha \cdot c}\right)  \\
+ x_2 & = \frac{1}{2\alpha} \times \left(-b - \sqrt{-b^2 - 4\cdot \alpha \cdot c}\right) \\
+ & = \frac{-b - \sqrt{-b^2 - 4 \alpha c}}{2a}
+\end{align*}
+\end{enumerate}
+
+\section{Hyperlinks}
+Visit \href{https://www.google.com}{Google} for more information.
+A bare URL: \url{https://www.overleaf.com/learn}.
+An internal jump: see Section~\ref{sec:mathmod} or Table~\ref{tab:booktabs}.
+
+\section{Pseudocode}
+\begin{algorithm}[ht]
+\caption{Calculate Factorial}
+\label{alg:factorial}
+\begin{algorithmic}[1] % The [1] adds line numbers to every line
+    \Require $n \geq 0$
+    \Ensure Returns $n!$
+
+    \State $result \gets 1$
+
+    \If{$n = 0$ \textbf{or} $n = 1$}
+        \State \Return $result$
+    \EndIf
+
+    \While{$n > 1$}
+        \State $result \gets result \times n$
+        \State $n \gets n - 1$
+    \EndWhile
+
+    \State \Return $result$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+\caption{Ray--Scene Intersection (new example)}
+\label{alg:raycast}
+\begin{algorithmic}[1]
+    \Require ray $r$, scene $S$
+    \Ensure nearest hit $h$ or $\varnothing$
+    \State $t_{\min} \gets \infty$; \quad $h \gets \varnothing$
+    \ForAll{objects $o \in S$}
+        \State $t \gets \Call{Intersect}{r, o}$
+        \If{$t > 0$ \textbf{and} $t < t_{\min}$}
+            \State $t_{\min} \gets t$
+            \State $h \gets o$
+        \EndIf
+    \EndFor
+    \State \Return $h$
+\end{algorithmic}
+\end{algorithm}
+
+\section{Code Snippet}
+\begin{lstlisting}[language=Python, caption=A simple Python function]
+def calculate_fibonacci(n):
+    """Calculate the nth Fibonacci number."""
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return calculate_fibonacci(n-1) + calculate_fibonacci(n-2)
+
+print(calculate_fibonacci(10))
+\end{lstlisting}
+
+\noindent Inline code is also possible with \verb|\lstinline|: \lstinline[language=C]|for(int i=0;i<n;i++)|.
+
+%=====================================================================
+\clearpage
+\part*{Part II --- Mathematical Foundations of Image Synthesis}
+\addcontentsline{toc}{section}{Part II --- Mathematical Foundations of Image Synthesis}
+%=====================================================================
+
+\section{Introduction to Image Synthesis}
+Image synthesis is the process of generating images from mathematical and algo-rithmic descriptions. Modern graphics systems rely on \textbf{precise mathematical models} and efficient computation. \emph{Even small numerical errors} can result in visible artifacts in rendered images. Typical formulations involve scalar values such as $x$, indexed parameters
+like $I_{ij}$, and exponential terms $e^{x^2}$. These elements are combined to simulate realistic lighting behavior.
+
+\section{Core Components}
+\subsection{Rendering Pipeline}
+The rendering pipeline consists of the following stages:
+
+\begin{itemize}
+    \item Scene Definition
+    \item Camera Configuration
+    \item[-] Light Placement
+\end{itemize}
+
+\begin{changemargin}{-1cm}{0cm}
+\textbf{Important} Shading Model\end{changemargin}
+\begin{itemize}
+    \item[-] Diffuse Shading
+    \item[-] Specular Highlights
+\end{itemize}
+
+\subsection{Execution Order}
+\begin{enumerate}
+    \item Input Processing
+    \item Ray Construction
+        \begin{enumerate}
+            \item Primary Rays
+            \item Secondary Rays
+        \end{enumerate}
+    \item Intersection Evaluation
+        \begin{itemize}
+            \item Object Hit Test
+        \end{itemize}
+\end{enumerate}
+
+\section{Mathemetical Modeling}
+Light interaction with surfaces can be expressed using the following equations.
+
+\begin{equation}
+    L = I_{ij} \cdot \cos(\theta) + R
+\end{equation}
+
+$$k = \frac{ab}{cd}$$
+
+\begin{align*}
+    f(x) &= x^2 + 2x + 1\\
+        &= (x+1)^2\tag{2}
+\end{align*}
+
+\[
+\lvert y \rvert =
+\begin{cases}
+    y & \text{if } x \geq 0 \\
+    -y  & \text{if } x < 0
+\end{cases}
+\]
+
+\[
+p(t) =
+\begin{cases}
+    0 & \text{if } t < 0 \\
+    e^-t  & \text{if } 0 \leq t < 3 \\
+    ln(t-2) & \text{if } t \geq 3
+\end{cases}
+\]
+
+$$ \mathcal{N}(x_i, \mu, \sigma) = \frac{1}{\sqrt{2\pi}\sigma}e^{-{\frac{ ({x_i-\mu})^2}{2\sigma^2}}} $$
+
+\subsection{Matrices and vectors (new)}
+Different matrix delimiters:
+\[
+A = \begin{pmatrix} a & b \\ c & d \end{pmatrix},\qquad
+B = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix},\qquad
+C = \begin{vmatrix} a & b \\ c & d \end{vmatrix} = ad - bc,\qquad
+D = \begin{Bmatrix} x \\ y \end{Bmatrix}.
+\]
+
+A general matrix with ellipses:
+\[
+M =
+\begin{bmatrix}
+m_{11} & m_{12} & \cdots & m_{1n} \\
+m_{21} & m_{22} & \cdots & m_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+m_{m1} & m_{m2} & \cdots & m_{mn}
+\end{bmatrix}
+\in \R^{m \times n}.
+\]
+
+The homogeneous perspective projection:
+\[
+\begin{bmatrix} x' \\ y' \\ z' \\ w' \end{bmatrix}
+=
+\begin{bmatrix}
+f/a & 0 & 0 & 0 \\
+0 & f & 0 & 0 \\
+0 & 0 & \dfrac{z_f+z_n}{z_n-z_f} & \dfrac{2 z_f z_n}{z_n-z_f} \\
+0 & 0 & -1 & 0
+\end{bmatrix}
+\begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix}.
+\]
+
+\subsection{Multi-line and aligned equations (new)}
+\verb|align| numbers every line; \verb|\notag| suppresses one.
+\begin{align}
+    L_o(\bm{x}, \bm{\omega}_o)
+      &= L_e(\bm{x}, \bm{\omega}_o)
+       + \int_{\Omega} f_r(\bm{x}, \bm{\omega}_i, \bm{\omega}_o)\,
+         L_i(\bm{x}, \bm{\omega}_i)\,(\bm{\omega}_i \cdot \bm{n})\,
+         \mathrm{d}\bm{\omega}_i \label{eq:rendering} \\
+      &\approx L_e + \frac{1}{N}\sum_{k=1}^{N}
+         \frac{f_r\, L_i\, (\bm{\omega}_k \cdot \bm{n})}{p(\bm{\omega}_k)} \notag
+\end{align}
+
+Equation~\eqref{eq:rendering} is the rendering equation. Use \verb|gather| when
+lines need no alignment point:
+\begin{gather}
+    \nabla \cdot \bm{E} = \frac{\rho}{\varepsilon_0} \\
+    \nabla \times \bm{B} = \mu_0 \bm{J} + \mu_0\varepsilon_0 \dd{\bm{E}}{t}
+\end{gather}
+
+Use \verb|split| for one long equation with a single number:
+\begin{equation}
+\begin{split}
+    \Ex{X^2} &= \int_{-\infty}^{\infty} x^2 \, p(x)\,\mathrm{d}x \\
+             &= \operatorname{Var}(X) + \left(\Ex{X}\right)^2.
+\end{split}
+\end{equation}
+
+\subsection{Operators, delimiters, and cancellation (new)}
+Custom operators: $\displaystyle \hat{\theta} = \argmin_{\theta \in \Theta} \norm{y - X\theta}_2^2$,
+and $\sinc(x) = \dfrac{\sin \pi x}{\pi x}$.
+
+Auto-sized delimiters: $\abs*{\dfrac{a}{b}}$ versus fixed $\abs{\frac{a}{b}}$.
+
+Cancellation in a derivation:
+\[
+\frac{\cancel{2}\,a\,b}{\cancel{2}\,c} = \frac{ab}{c}.
+\]
+
+Units via \texttt{siunitx}: a wavelength of \SI{550}{\nano\metre}, an irradiance
+of \SI{1361}{\watt\per\square\metre}, and an angle of \ang{45}.
+
+\subsection{Theorems and definitions (new)}
+
+\begin{definition}[Radiance]
+\label{def:radiance}
+Radiance $L$ is the radiant flux per unit projected area per unit solid angle,
+measured in \si{\watt\per\square\metre\per\steradian}.
+\end{definition}
+
+\begin{theorem}[Energy conservation]
+\label{thm:energy}
+For any physically valid BRDF $f_r$ and all outgoing directions $\bm{\omega}_o$,
+\[
+\int_{\Omega} f_r(\bm{x},\bm{\omega}_i,\bm{\omega}_o)\,
+(\bm{\omega}_i \cdot \bm{n}) \, \mathrm{d}\bm{\omega}_i \le 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+The reflected flux cannot exceed the incident flux; dividing both sides by the
+incident flux and applying Definition~\ref{def:radiance} gives the bound. Equality
+holds only for a lossless surface.
+\end{proof}
+
+\begin{lemma}
+A Lambertian BRDF $f_r = \rho/\pi$ satisfies Theorem~\ref{thm:energy} iff
+$\rho \le 1$.
+\end{lemma}
+
+\begin{remark}
+In practice $\rho \in [0.02, 0.9]$ for real-world dielectrics.
+\end{remark}
+
+\section{Performance Comparison}
+
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+         Method & Accuracy & Time Complexity  \\ \hline
+         Rasterization & Medium & $O(n)$ \\ \hline
+        \multirow{2}{2cm}{Ray Tracing} & High & $O(n^2)$ \\
+        & Very High & $O(n^3)$ \\ \hline
+        \multicolumn{2}{|c|}{Hybrid Method} & $O(n^2)$ \\ \hline
+    \end{tabular}
+    \caption{Comparison of Image Synthesis Techniques}
+    \label{tab:comparison}
+\end{table}
+
+The results in Table \ref{tab:comparison} highlight the trade-off between accuracy and computational cost.
+
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!60!black,
+                  title=Takeaway (new: tcolorbox)]
+Rasterization wins on throughput; ray tracing wins on correctness. Hybrid
+deferred pipelines are the usual compromise in real-time engines.
+\end{tcolorbox}
+
+\clearpage
+
+\section{Visual Illustration}
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.3\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{A (1).PNG}
+        \caption{Output A}
+        \label{fig:outA}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{B (1).PNG}
+        \caption{Output B}
+        \label{fig:outB}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{C (1).PNG}
+        \caption{Output C}
+        \label{fig:outC}
+    \end{subfigure}
+
+    \caption{Comparison of three rendering outputs.}
+    \label{fig:outputs}
+\end{figure}
+
+Figure \ref{fig:outputs} compares three different rendering outputs arranged in a single row.
+
+\section{Conclusion}
+Image synthesis combines \underline{mathematical precision}, algorithmic design, and efficient implementation. As scene complexity increases, choosing the appropriate method becomes critical for balancing quality and performance.
+
+%=====================================================================
+\clearpage
+\part*{Part III --- CSE200: Online-1 on \LaTeX}
+\addcontentsline{toc}{section}{Part III --- CSE200: Online-1 on \LaTeX}
+%=====================================================================
+
+\section{Introduction to Document Preparation}
+
+Document preparation systems are essential for producing structured and professional technical documents. \textbf{LATEX} allows authors to focus on content while maintaining consistent formatting. This article demonstrates formatted text, lists, equations, tables, and figures using commands taught in class.
+
+\section{List Structures}
+\subsection{Mixed and Nested List}
+\begin{itemize}
+    \item Primary Feature
+    \item Secondary Features
+        \begin{itemize}
+    \item[-] Inline Math
+    \item[-] Display Math
+        \end{itemize}
+\end{itemize}
+
+\textbf{Note} Lists can be customized.
+
+\section{Mathematical Modeling}
+\label{sec:mathmod}
+Mathematical expressions are commonly used to describe relationships among
+variables. Let the variables be $x_i$, $y_j$, and $\sigma^2$. Consider also
+$x_i, y, \text{ and } z^2.$
+
+\subsection{Displayed Equations}
+
+\begin{equation}
+    y_j = \alpha{x_j}^2 + \beta x_j + \gamma
+\end{equation}
+
+\begin{align*}
+     T &= \sum_{i=1}^{n}(x_i - \mu)^2 \\
+     &= \sum_{i=1}^{n}x_i^2 - 2\mu\sum_{i=1}^{n}x_i + n\mu^2 \tag{2}
+\end{align*}
+
+\[
+f(x_i) =
+\begin{cases}
+    \frac{{x_i}^2}{\sigma^2} & \text{if } x_i \geq 0 \\
+    \frac{|x_i|}{\sigma}  & \text{if } x_i < 0
+\end{cases}
+\]
+
+\subsection{Two-column math (new)}
+\begin{multicols}{2}
+\noindent
+Left column:
+\[
+\int_0^1 x^n \, \mathrm{d}x = \frac{1}{n+1}
+\]
+\[
+\sum_{k=0}^{n} \binom{n}{k} = 2^n
+\]
+
+\columnbreak
+
+\noindent
+Right column:
+\[
+\prod_{i=1}^{n} i = n!
+\]
+\[
+\lim_{x \to 0} \frac{\sin x}{x} = 1
+\]
+\end{multicols}
+
+\section{Tabular Data Presentation}
+
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+        \multirow{2}{2cm}{\centering \textbf{Module}} & \multicolumn{2}{|c|}{\textbf{Score}} \\ \cline{2-3}
+          & Theory & Lab  \\ \hline
+          Module A & 75 & 80 \\ \hline
+          \multirow{2}{2cm}{\centering Module B} & 88 & 90 \\
+          & 85 & 87 \\ \hline
+          Module C & 70 & 72 \\ \hline
+    \end{tabular}
+    \caption{Module-wise Performance Summary}
+    \label{tab:modules}
+\end{table}
+
+\subsection{Aligned-decimal table with siunitx (new)}
+\begin{table}[H]
+\centering
+\arrayrulecolor{black}
+\begin{tabular}{l S[table-format=3.2] S[table-format=2.1]}
+\toprule
+{\textbf{Module}} & {\textbf{Mean}} & {\textbf{Std.\ dev.}} \\
+\midrule
+Module A & 77.50 & 3.5 \\
+Module B & 87.50 & 1.3 \\
+Module C & 71.00 & 14.0 \\
+\bottomrule
+\end{tabular}
+\arrayrulecolor{blue}
+\caption{Decimal-aligned summary using \texttt{siunitx} S columns}
+\label{tab:siunitx}
+\end{table}
+
+\clearpage
+
+\section{Visual Comparison}
+\subsection{Asymmetric Subfigure Layout}
+    \begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.8\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{A (1).PNG}
+        \caption{Main Diagram}
+        \label{fig:mainDiag}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{B (1).PNG}
+        \caption{Detail B}
+        \label{fig:detailB}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\linewidth}
+        \centering
+        \includegraphics[width=1\linewidth]{C (1).PNG}
+        \caption{Detail C}
+        \label{fig:detailC}
+    \end{subfigure}
+
+    \caption{Asymmetric layout with one dominant figure}
+    \label{fig:asymmetric}
+\end{figure}
+
+Figure \ref{fig:asymmetric} illustrates how visual elements can be arranged systematically within a document.
+
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+This article highlighted the importance of \textbf{structured writing} using \LaTeX.The use of \textit{formatted text}, mathematical expressions, tables, and figures improves both \underline{readability} and presentation quality.
+
+%=====================================================================
+\section{Citation Examples}
+
+I am citing an example work, \cite{vaswani2017attention, 10.1093/bioinformatics/btu462}
+
+% \nocite{}
+
+\citet{vaswani2017attention} introduced transformers in \citeyear{vaswani2017attention}
+
+\bibliographystyle{plainnat}
+\bibliography{biblio}
+
+\appendix
+\section{Appendix: Symbol Table}
+\begin{table}[H]
+\centering
+\arrayrulecolor{black}
+\begin{tabular}{cl}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} \\
+\midrule
+$L_o$        & Outgoing radiance \\
+$f_r$        & Bidirectional reflectance distribution function \\
+$\bm{\omega}$& Direction on the unit sphere \\
+$\rho$       & Albedo \\
+$\sigma$     & Standard deviation \\
+\bottomrule
+\end{tabular}
+\arrayrulecolor{blue}
+\caption{Notation used throughout this document}
+\label{tab:symbols}
+\end{table}
+
+\end{document}
