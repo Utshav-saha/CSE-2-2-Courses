@@ -182,5 +182,138 @@ class Home implements SmartDevice{
     }
 }
 
+abstract class deviceDecorator implements SmartDevice{
+    private SmartDevice wrappee;
+
+    public deviceDecorator(SmartDevice wrappee) {
+        this.wrappee = wrappee;
+    }
+
+    @Override
+    public void activate() {
+        wrappee.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        wrappee.deactivate();
+    }
+
+    @Override
+    public double getPowerUsage() {
+        return wrappee.getPowerUsage();
+    }
+
+    @Override
+    public String getStatus() {
+       return wrappee.getStatus();
+    }
+}
+
+class AccessRestricted extends deviceDecorator{
+
+    private int pin;
+    boolean locked = true;
+    public AccessRestricted(SmartDevice wrappee, int pin) {
+        super(wrappee);
+        this.pin = pin;
+    }
+
+    @Override
+    public void activate() {
+        if(locked) return;
+        else super.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        if(locked) return;
+        else super.deactivate();
+    }
+
+    @Override
+    public String getStatus() {
+        String s = super.getStatus();
+        if(locked) s += " [LOCKED]";
+
+        return s;
+    }
+
+    public void unlock(int key){
+        if(!locked) return;
+        else if(key == pin){
+            locked = false;
+            System.out.println("    >> Unlock SUCCESS");
+        }
+
+        else{
+            System.out.println("    >> Unlock FAILED");
+        }
+    }
+}
+
+class TimerControlled extends deviceDecorator{
+
+    private boolean timerRunning = false;
+    private int timerSeconds = 0;
+    public TimerControlled(SmartDevice wrappee, int timerSeconds) {
+        super(wrappee);
+        this.timerSeconds = timerSeconds;
+    }
+
+
+    @Override
+    public void activate() {
+        timerRunning = true;
+        super.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        super.deactivate();
+        timerRunning = false;
+    }
+
+    @Override
+    public String getStatus() {
+        String s = super.getStatus();
+        if (timerRunning) s += " (auto-off in " + timerSeconds + "s)";
+
+        return s;
+    }
+
+    public void simulateTimerExpiry(){
+        if(timerRunning){
+            System.out.println("    >> Timer expired — auto-deactivating.");
+            this.deactivate();
+        }
+    }
+}
+
+class PowerThrottled extends deviceDecorator{
+    private boolean powerThrottled = false;
+    private double powerCap = 0;
+
+    public PowerThrottled(SmartDevice wrappee, int powerCap) {
+        super(wrappee);
+        this.powerCap = powerCap;
+        powerThrottled = true;
+    }
+
+    @Override
+    public double getPowerUsage() {
+        double p = super.getPowerUsage();
+        if (powerThrottled && p > powerCap) p = powerCap;
+        return p;
+    }
+
+    @Override
+    public String getStatus() {
+        String s = super.getStatus();
+        if (powerThrottled && super.getPowerUsage()> powerCap) s += " [throttled to " + powerCap + "W]";
+        return s;
+    }
+}
+
 
 

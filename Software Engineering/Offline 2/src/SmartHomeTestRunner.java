@@ -37,34 +37,34 @@ public class SmartHomeTestRunner {
         testHomeAggregation();
         testHomeCascade();
 
-//        section("4. Upgrade — ACCESS RESTRICTED");
-//        testAccessRestrictedBlocksActivation();
-//        testAccessRestrictedUnlockWrongPin();
-//        testAccessRestrictedUnlockCorrectPin();
-//        testAccessRestrictedPowerUnaffected();
-//        testAccessRestrictedStatusAnnotation();
-//
-//        section("5. Upgrade — TIMER CONTROLLED");
-//        testTimerControlledActivation();
-//        testTimerControlledExpiry();
-//        testTimerControlledManualDeactivateCancels();
-//        testTimerControlledStatusAnnotation();
-//
-//        section("6. Upgrade — POWER THROTTLED");
-//        testPowerThrottledCaps();
-//        testPowerThrottledBelowCap();
-//        testPowerThrottledStatusAnnotation();
-//
-//        section("7. Multiple Upgrade — DEVICE LEVEL");
-//        testAccessRestrictedPlusTimerControlled();
-//        testAccessRestrictedPlusPowerThrottled();
-//        testTripleStack();
-//
+        section("4. Upgrade — ACCESS RESTRICTED");
+        testAccessRestrictedBlocksActivation();
+        testAccessRestrictedUnlockWrongPin();
+        testAccessRestrictedUnlockCorrectPin();
+        testAccessRestrictedPowerUnaffected();
+        testAccessRestrictedStatusAnnotation();
+
+        section("5. Upgrade — TIMER CONTROLLED");
+        testTimerControlledActivation();
+        testTimerControlledExpiry();
+        testTimerControlledManualDeactivateCancels();
+        testTimerControlledStatusAnnotation();
+
+        section("6. Upgrade — POWER THROTTLED");
+        testPowerThrottledCaps();
+        testPowerThrottledBelowCap();
+        testPowerThrottledStatusAnnotation();
+
+        section("7. Multiple Upgrade — DEVICE LEVEL");
+        testAccessRestrictedPlusTimerControlled();
+        testAccessRestrictedPlusPowerThrottled();
+        testTripleStack();
+
 //        section("8. UNIFORM INTERFACE");
 //        testUpdatedDeviceIsSmartDevice();
 //        testEcoRoomIsSmartDevice();
 //        testRoomAcceptsUpgradedChildren();
-//
+
 //        section("9. ECOMODE FOR ROOM");
 //        testEcoModeWithinBudget();
 //        testEcoModeShedsOverBudget();
@@ -212,158 +212,159 @@ public class SmartHomeTestRunner {
     //  4. ACCESS RESTRICTION TEST
     // ============================================================
 
-//    static void testAccessRestrictedBlocksActivation() {
-//        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
-//        ar.activate();
-//        assertEquals("Locked light stays off", 0.0, ar.getPowerUsage());
-//    }
-//
-//    static void testAccessRestrictedUnlockWrongPin() {
-//        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
-//        ar.unlock(0000);
-//        ar.activate();
-//        assertEquals("Wrong PIN still locked", 0.0, ar.getPowerUsage());
-//    }
-//
-//    static void testAccessRestrictedUnlockCorrectPin() {
-//        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
-//        ar.unlock(1234);
-//        ar.activate();
-//        assertEquals("Correct PIN unlocks", 10.0, ar.getPowerUsage());
-//    }
-//
-//    static void testAccessRestrictedPowerUnaffected() {
-//        SmartLight l = new SmartLight();
-//        l.activate();   // turn on BEFORE locking
-//        AccessRestricted ar = new AccessRestricted(l, 1234);
-//        // Locked but already running — power should still report
-//        assertEquals("Locked but running device reports power", 10.0, ar.getPowerUsage());
-//    }
-//
-//    static void testAccessRestrictedStatusAnnotation() {
-//        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
-//        assertContains("Locked status annotation", ar.getStatus(), "LOCKED");
-//        ar.unlock(1234);
-//        assertNotContains("Unlocked no annotation", ar.getStatus(), "LOCKED");
-//    }
-//
+    static void testAccessRestrictedBlocksActivation() {
+        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
+        ar.activate();
+        assertEquals("Locked light stays off", 0.0, ar.getPowerUsage());
+    }
+
+    static void testAccessRestrictedUnlockWrongPin() {
+        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
+        ar.unlock(0000);
+        ar.activate();
+        assertEquals("Wrong PIN still locked", 0.0, ar.getPowerUsage());
+    }
+
+    static void testAccessRestrictedUnlockCorrectPin() {
+        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
+        ar.unlock(1234);
+        ar.activate();
+        assertEquals("Correct PIN unlocks", 10.0, ar.getPowerUsage());
+    }
+
+    static void testAccessRestrictedPowerUnaffected() {
+        SmartLight l = new SmartLight();
+        l.activate();   // turn on BEFORE locking
+        AccessRestricted ar = new AccessRestricted(l, 1234);
+        // Locked but already running — power should still report
+        assertEquals("Locked but running device reports power", 10.0, ar.getPowerUsage());
+    }
+
+    static void testAccessRestrictedStatusAnnotation() {
+        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
+        assertContains("Locked status annotation", ar.getStatus(), "LOCKED");
+        ar.unlock(1234);
+        assertNotContains("Unlocked no annotation", ar.getStatus(), "LOCKED");
+    }
+
 //    // ============================================================
 //    //  5. TIMER CONTROL
 //    // ============================================================
 //
-//    static void testTimerControlledActivation() {
-//        TimerControlled tc = new TimerControlled(new SmartLight(), 60);
-//        tc.activate();
-//        assertEquals("Timer device active", 10.0, tc.getPowerUsage());
-//    }
-//
-//    static void testTimerControlledExpiry() {
-//        TimerControlled tc = new TimerControlled(new SmartLight(), 60);
-//        tc.activate();
-//        tc.simulateTimerExpiry();
-//        assertEquals("Timer expired, device off", 0.0, tc.getPowerUsage());
-//    }
-//
-//    static void testTimerControlledManualDeactivateCancels() {
-//        TimerControlled tc = new TimerControlled(new SmartLight(), 60);
-//        tc.activate();
-//        tc.deactivate();
-//        // After manual deactivate, simulateTimerExpiry should do nothing
-//        tc.simulateTimerExpiry();
-//        assertEquals("Manual deactivate cancels timer", 0.0, tc.getPowerUsage());
-//    }
-//
-//    static void testTimerControlledStatusAnnotation() {
-//        TimerControlled tc = new TimerControlled(new SmartLight(), 60);
-//        tc.activate();
-//        assertContains("Timer status annotation", tc.getStatus(), "auto-off");
-//        tc.deactivate();
-//        assertNotContains("No timer annotation when off", tc.getStatus(), "auto-off");
-//    }
+    static void testTimerControlledActivation() {
+        TimerControlled tc = new TimerControlled(new SmartLight(), 60);
+        tc.activate();
+        assertEquals("Timer device active", 10.0, tc.getPowerUsage());
+    }
+
+    static void testTimerControlledExpiry() {
+        TimerControlled tc = new TimerControlled(new SmartLight(), 60);
+        tc.activate();
+        tc.simulateTimerExpiry();
+        assertEquals("Timer expired, device off", 0.0, tc.getPowerUsage());
+    }
+
+    static void testTimerControlledManualDeactivateCancels() {
+        TimerControlled tc = new TimerControlled(new SmartLight(), 60);
+        tc.activate();
+        tc.deactivate();
+        // After manual deactivate, simulateTimerExpiry should do nothing
+        tc.simulateTimerExpiry();
+        assertEquals("Manual deactivate cancels timer", 0.0, tc.getPowerUsage());
+    }
+
+    static void testTimerControlledStatusAnnotation() {
+        TimerControlled tc = new TimerControlled(new SmartLight(), 60);
+        tc.activate();
+        assertContains("Timer status annotation", tc.getStatus(), "auto-off");
+        tc.deactivate();
+        assertNotContains("No timer annotation when off", tc.getStatus(), "auto-off");
+    }
 //
 //    // ============================================================
 //    //  6. POWER THROTTLE
 //    // ============================================================
-//
-//    static void testPowerThrottledCaps() {
-//        PowerThrottled pt = new PowerThrottled(new SmartThermostat(), 80);
-//        pt.activate();
-//        assertEquals("Throttled 150W to 80W", 80.0, pt.getPowerUsage());
-//    }
-//
-//    static void testPowerThrottledBelowCap() {
-//        PowerThrottled pt = new PowerThrottled(new SmartLight(), 50);
-//        pt.activate();
-//        assertEquals("10W under 50W cap unchanged", 10.0, pt.getPowerUsage());
-//    }
-//
-//    static void testPowerThrottledStatusAnnotation() {
-//        PowerThrottled pt = new PowerThrottled(new SmartThermostat(), 80);
-//        pt.activate();
-//        assertContains("Throttled status annotation", pt.getStatus(), "throttled");
-//    }
-//
+
+    static void testPowerThrottledCaps() {
+        PowerThrottled pt = new PowerThrottled(new SmartThermostat(), 80);
+        pt.activate();
+        assertEquals("Throttled 150W to 80W", 80.0, pt.getPowerUsage());
+    }
+
+    static void testPowerThrottledBelowCap() {
+        PowerThrottled pt = new PowerThrottled(new SmartLight(), 50);
+        pt.activate();
+        assertEquals("10W under 50W cap unchanged", 10.0, pt.getPowerUsage());
+    }
+
+    static void testPowerThrottledStatusAnnotation() {
+        PowerThrottled pt = new PowerThrottled(new SmartThermostat(), 80);
+        pt.activate();
+        assertContains("Throttled status annotation", pt.getStatus(), "throttled");
+    }
+
+
 //    // ============================================================
 //    //  7. Multiple Upgrade
 //    // ============================================================
 //
-//    static void testAccessRestrictedPlusTimerControlled() {
-//        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
-//        TimerControlled tc = new TimerControlled(ar, 60);
-//
-//        // Locked: activate should fail
-//        tc.activate();
-//        assertEquals("Locked + timed: light stays off", 0.0, tc.getPowerUsage());
-//
-//        // Unlock and activate
-//        ar.unlock(1234);
-//        tc.activate();
-//        assertEquals("Unlocked + timed: light on", 10.0, tc.getPowerUsage());
-//
-//        // Timer expires
-//        tc.simulateTimerExpiry();
-//        assertEquals("Timer expired: light off", 0.0, tc.getPowerUsage());
-//    }
-//
-//    static void testAccessRestrictedPlusPowerThrottled() {
-//        AccessRestricted ar = new AccessRestricted(new SmartThermostat(), 5555);
-//        PowerThrottled pt = new PowerThrottled(ar, 80);
-//        ar.unlock(5555);
-//        pt.activate();
-//        assertEquals("Unlocked + throttled", 80.0, pt.getPowerUsage());
-//    }
-//
-//    static void testTripleStack() {
-//        AccessRestricted ar = new AccessRestricted(new SmartThermostat(), 1111);
-//        PowerThrottled pt = new PowerThrottled(ar, 80);
-//        TimerControlled tc = new TimerControlled(pt, 120);
-//
-//        // All locked
-//        tc.activate();
-//        assertEquals("Triple stack locked", 0.0, tc.getPowerUsage());
-//
-//        // Unlock, activate, verify throttle
-//        ar.unlock(1111);
-//        tc.activate();
-//        assertEquals("Triple stack unlocked + throttled", 80.0, tc.getPowerUsage());
-//        assertContains("Triple stack timer annotation", tc.getStatus(), "auto-off");
-//
-//        // Timer expires
-//        tc.simulateTimerExpiry();
-//        assertEquals("Triple stack timer expired", 0.0, tc.getPowerUsage());
-//    }
-//
+    static void testAccessRestrictedPlusTimerControlled() {
+        AccessRestricted ar = new AccessRestricted(new SmartLight(), 1234);
+        TimerControlled tc = new TimerControlled(ar, 60);
+
+        // Locked: activate should fail
+        tc.activate();
+        assertEquals("Locked + timed: light stays off", 0.0, tc.getPowerUsage());
+
+        // Unlock and activate
+        ar.unlock(1234);
+        tc.activate();
+        assertEquals("Unlocked + timed: light on", 10.0, tc.getPowerUsage());
+
+        // Timer expires
+        tc.simulateTimerExpiry();
+        assertEquals("Timer expired: light off", 0.0, tc.getPowerUsage());
+    }
+
+    static void testAccessRestrictedPlusPowerThrottled() {
+        AccessRestricted ar = new AccessRestricted(new SmartThermostat(), 5555);
+        PowerThrottled pt = new PowerThrottled(ar, 80);
+        ar.unlock(5555);
+        pt.activate();
+        assertEquals("Unlocked + throttled", 80.0, pt.getPowerUsage());
+    }
+
+    static void testTripleStack() {
+        AccessRestricted ar = new AccessRestricted(new SmartThermostat(), 1111);
+        PowerThrottled pt = new PowerThrottled(ar, 80);
+        TimerControlled tc = new TimerControlled(pt, 120);
+
+        // All locked
+        tc.activate();
+        assertEquals("Triple stack locked", 0.0, tc.getPowerUsage());
+
+        // Unlock, activate, verify throttle
+        ar.unlock(1111);
+        tc.activate();
+        assertEquals("Triple stack unlocked + throttled", 80.0, tc.getPowerUsage());
+        assertContains("Triple stack timer annotation", tc.getStatus(), "auto-off");
+
+        // Timer expires
+        tc.simulateTimerExpiry();
+        assertEquals("Triple stack timer expired", 0.0, tc.getPowerUsage());
+    }
+
 //    // ============================================================
 //    //  8. UNIFORM INTERFACE
 //    // ============================================================
-//
-//    static void testUpdatedDeviceIsSmartDevice() {
-//        SmartDevice d = new AccessRestricted(new SmartLight(), 1234);
-//        assertNotNull("Upgraded device is SmartDevice", d);
-//        // Should compile and work — if this method runs, the type check passed
-//        assertTrue("Upgraded device has status", d.getStatus() != null);
-//    }
-//
+
+    static void testUpdatedDeviceIsSmartDevice() {
+        SmartDevice d = new AccessRestricted(new SmartLight(), 1234);
+        assertNotNull("Upgraded device is SmartDevice", d);
+        // Should compile and work — if this method runs, the type check passed
+        assertTrue("Upgraded device has status", d.getStatus() != null);
+    }
+
 //    static void testEcoRoomIsSmartDevice() {
 //        Room r = new Room("Test");
 //        r.addDevice(new SmartLight());
@@ -382,7 +383,7 @@ public class SmartHomeTestRunner {
 //        // plain light = 10W, throttled light = 5W, locked thermostat = 0W
 //        assertEquals("Room with mixed children", 15.0, r.getPowerUsage());
 //    }
-//
+
 //    // ============================================================
 //    //  9. ECOMODE — ROOM LEVEL
 //    // ============================================================
