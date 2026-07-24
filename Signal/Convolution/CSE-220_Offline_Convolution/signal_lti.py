@@ -22,7 +22,7 @@ class DiscreteSignal:
         self.start_time = start_time
         self.end_time = end_time
         self.time_axis = range(start_time, end_time+1)
-        self.values = np.zeros(len(self.time_axis)).dtype(float)
+        self.values = np.zeros(len(self.time_axis))
 
     # Return the number of stored samples in the signal.
     def __len__(self):
@@ -36,9 +36,9 @@ class DiscreteSignal:
     def get_value_at_time(self, t):
         if t in self.time_axis:
             idx = t - self.start_time
-            return self.values[idx]
+            return float(self.values[idx])
         
-        return 0 
+        return 0.0
 
     # Set the signal value at the given time index.
     def set_value_at_time(self, t, value):
@@ -69,17 +69,26 @@ class DiscreteSignal:
             summation = self.get_value_at_time(i) + other.get_value_at_time(i) 
             result.set_value_at_time(i, summation)
 
+        
+        return result
+
 
     # Return a scaled copy of the signal.
     def multiply(self, scalar):
-        self.values = scalar * self.values
+
+        
+        new_values =  scalar * self.values
+
+        result = DiscreteSignal(self.start_time, self.end_time)
+        result.values = new_values
+
+        return result
 
     # Return the nonzero samples of the signal.
     def nonzero_samples(self, tolerance=1e-12):
-        indices = np.nonzero(self.values)
-        samples = np.array(self.values)[indices]
+        indices = np.nonzero(np.abs(self.values)>tolerance)[0]
 
-        return samples
+        return [(int(idx + self.start_time), float(self.values[idx])) for idx in indices]
 
     def plot(self, title, save_path=None, ax=None):
         import matplotlib.pyplot as plt
@@ -126,36 +135,79 @@ class LTISystem:
     # Return all shifted and scaled impulse-response components for the input.
     def get_response_components(self, input_signal: DiscreteSignal):
         
-        start, end = self.output_range(input_signal)
-        time_range = range(start, end+1)
-        
-        y = np.zeros(len(time_range)).dtype(float)
+        components = []
 
-        for n in time_range:
-            y_n = 0
+        for k in input_signal.times():
 
-            for k in time_range:
-                x_k = input_signal.get_value_at_time(k)
-                h_nk = self.impulse_response.get_value_at_time(n-k)
+            x_k = input_signal.get_value_at_time(k)
 
-                y_n += x_k + h_nk
-            
-            y
+            if x_k == 0:
+                continue
 
+            shifted = self.impulse_response.shift(k)
+            scaled = shifted.multiply(x_k)
+            components.append((k,scaled))
+
+        return components
         
 
     # Return the system output using superposition of response components.
     def output_by_superposition(self, input_signal):
-        raise NotImplementedError("Complete output_by_superposition")
+        components = self.get_response_components(input_signal)
+        start , end = self.output_range(input_signal)
+
+        result = DiscreteSignal(start, end)
+
+        for k, component in components:
+
+            result = result.add(component)
+
+        return result
+
+
 
     # Return the nonzero product terms that contribute to one output sample.
-    def get_contributions_at_time(self, input_signal, n):
-        raise NotImplementedError("Complete get_contributions_at_time")
+    def get_contributions_at_time(self, input_signal:DiscreteSignal, n):
+        
+        
+        contributions = []
+
+        for k in input_signal.times():
+            x_k = input_signal.get_value_at_time(k)
+            h_nk = self.impulse_response.get_value_at_time(n-k)
+
+            term = x_k* h_nk
+
+            if(term != 0):
+                contributions.append((k, float(x_k), float(h_nk), float(term)))
+
+        return contributions
+
 
     # Return one output sample of the LTI system.
     def output_at_time(self, input_signal, n):
-        raise NotImplementedError("Complete output_at_time")
+        
+        y_n = 0
+
+        for k in input_signal.times():
+            x_k = input_signal.get_value_at_time(k)
+            h_nk = self.impulse_response.get_value_at_time(n-k)
+
+            y_n += x_k * h_nk
+
+        return float(y_n)
+
 
     # Return the complete output signal of the LTI system.
     def output(self, input_signal):
-        raise NotImplementedError("Complete output")
+
+        output_start , output_end = self.output_range(input_signal) 
+
+        y = DiscreteSignal(output_start,output_end)
+
+        for n in y.times():
+            y_n = self.output_at_time(input_signal,n)
+            y.set_value_at_time(n,y_n)
+
+
+        return y 

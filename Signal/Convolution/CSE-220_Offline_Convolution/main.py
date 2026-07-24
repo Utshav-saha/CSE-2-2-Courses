@@ -15,22 +15,40 @@ from signal_lti import DiscreteSignal, LTISystem, readable_time_ticks
 
 # Build a DiscreteSignal from a range and a list of values.
 def make_signal(start_time, end_time, values):
-    raise NotImplementedError("Complete make_signal")
+    
+    signal = DiscreteSignal(start_time, end_time)
+    signal.values = np.array(values, dtype=float)
+
+    return signal
 
 
 # Build a DiscreteSignal from selected sample values.
 def signal_from_samples(start_time, end_time, samples):
-    raise NotImplementedError("Complete signal_from_samples")
+    signal = DiscreteSignal(start_time, end_time)
+
+    for k , value in samples.items():
+        signal.set_value_at_time(k, value)
+    return signal
 
 
 # Return the identity impulse response: h[0] = 1.
 def impulse_identity():
-    raise NotImplementedError("Complete impulse_identity")
+    
+    signal = DiscreteSignal(0,0)
+    signal.set_value_at_time(0,1)
+
+    return signal
 
 
 # Return moving-average h[n] = 1/length for n = 0,...,length-1.
 def impulse_moving_average(length):
-    raise NotImplementedError("Complete impulse_moving_average")
+    
+    signal = DiscreteSignal(0,length-1)
+
+    for k in range(length):
+        signal.set_value_at_time(k, 1/length)
+
+    return signal
 
 
 # Return the 3-point moving average: h[0] = h[1] = h[2] = 1/3.
@@ -50,12 +68,21 @@ def impulse_moving_average_7():
 
 # Return weighted smoothing: h[0] = 0.5, h[1] = 0.3, h[2] = 0.2.
 def impulse_weighted_smoothing():
-    raise NotImplementedError("Complete impulse_weighted_smoothing")
+    signal = DiscreteSignal(0,2)
+    signal.set_value_at_time(0,0.5)
+    signal.set_value_at_time(1,0.3)
+    signal.set_value_at_time(2,0.2)
+
+    return signal
 
 
 # Return first difference: h[0] = 1, h[1] = -1.
 def impulse_first_difference():
-    raise NotImplementedError("Complete impulse_first_difference")
+    signal = DiscreteSignal(0,1)
+    signal.set_value_at_time(0,1)
+    signal.set_value_at_time(1,-1)
+
+    return signal
 
 
 BUILT_IN_IMPULSES = [
@@ -127,8 +154,17 @@ def print_signal(signal, name):
 
 
 # Return the maximum absolute sample difference between two signals.
-def max_absolute_difference(first_signal, second_signal):
-    raise NotImplementedError("Complete max_absolute_difference")
+def max_absolute_difference(first_signal : DiscreteSignal, second_signal : DiscreteSignal):
+    
+    start = min(first_signal.start_time, second_signal.start_time)
+    end = max(first_signal.end_time, second_signal.end_time)
+
+    diff = [
+        abs(first_signal.get_value_at_time(t) - second_signal.get_value_at_time(t))
+        for t in range(start,end+1)
+    ]
+
+    return float(max(diff))
 
 
 def normalized_grayscale_rgb(signal):
