@@ -315,5 +315,33 @@ class PowerThrottled extends deviceDecorator{
     }
 }
 
+abstract class modeDecorator extends Room{
+    private Room wrappee;
+
+    public modeDecorator(Room wrappee) {
+        super(wrappee.name);
+        this.wrappee = wrappee;
+    }
+    @Override
+    public void activate() {
+        wrappee.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        wrappee.deactivate();
+    }
+
+    @Override
+    public double getPowerUsage() {
+        return wrappee.getPowerUsage();
+    }
+
+    @Override
+    public String getStatus() {
+        return wrappee.getStatus();
+    }
+}
+
 
 

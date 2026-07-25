@@ -60,10 +60,10 @@ public class SmartHomeTestRunner {
         testAccessRestrictedPlusPowerThrottled();
         testTripleStack();
 
-//        section("8. UNIFORM INTERFACE");
-//        testUpdatedDeviceIsSmartDevice();
-//        testEcoRoomIsSmartDevice();
-//        testRoomAcceptsUpgradedChildren();
+        section("8. UNIFORM INTERFACE");
+        testUpdatedDeviceIsSmartDevice();
+        testEcoRoomIsSmartDevice();
+        testRoomAcceptsUpgradedChildren();
 
 //        section("9. ECOMODE FOR ROOM");
 //        testEcoModeWithinBudget();
@@ -365,24 +365,24 @@ public class SmartHomeTestRunner {
         assertTrue("Upgraded device has status", d.getStatus() != null);
     }
 
-//    static void testEcoRoomIsSmartDevice() {
-//        Room r = new Room("Test");
-//        r.addDevice(new SmartLight());
-//        SmartDevice d = new EcoMode(r, 100);
-//        assertNotNull("Eco room is SmartDevice", d);
-//        assertTrue("Eco room has status", d.getStatus() != null);
-//    }
-//
-//    static void testRoomAcceptsUpgradedChildren() {
-//        Room r = new Room("Test");
-//        r.addDevice(new SmartLight());                                 // plain
-//        r.addDevice(new AccessRestricted(new SmartThermostat(), 1234));  // upgraded
-//        r.addDevice(new PowerThrottled(new SmartLight(), 5));            // upgraded
-//        r.activate();
-//        // Only plain light and throttled light should be on (thermostat is locked)
-//        // plain light = 10W, throttled light = 5W, locked thermostat = 0W
-//        assertEquals("Room with mixed children", 15.0, r.getPowerUsage());
-//    }
+    static void testEcoRoomIsSmartDevice() {
+        Room r = new Room("Test");
+        r.addDevice(new SmartLight());
+        SmartDevice d = new EcoMode(r, 100);
+        assertNotNull("Eco room is SmartDevice", d);
+        assertTrue("Eco room has status", d.getStatus() != null);
+    }
+
+    static void testRoomAcceptsUpgradedChildren() {
+        Room r = new Room("Test");
+        r.addDevice(new SmartLight());                                 // plain
+        r.addDevice(new AccessRestricted(new SmartThermostat(), 1234));  // upgraded
+        r.addDevice(new PowerThrottled(new SmartLight(), 5));            // upgraded
+        r.activate();
+        // Only plain light and throttled light should be on (thermostat is locked)
+        // plain light = 10W, throttled light = 5W, locked thermostat = 0W
+        assertEquals("Room with mixed children", 15.0, r.getPowerUsage());
+    }
 
 //    // ============================================================
 //    //  9. ECOMODE — ROOM LEVEL
