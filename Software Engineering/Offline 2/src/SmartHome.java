@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 interface SmartDevice {
 
@@ -7,6 +9,7 @@ interface SmartDevice {
      void deactivate();
      double getPowerUsage();
      String getStatus();
+     SmartDevice getType();
 }
 
 class SmartLight implements SmartDevice{
@@ -36,6 +39,9 @@ class SmartLight implements SmartDevice{
 
             return s;
         }
+        public SmartDevice getType() {
+            return this;
+        }
     }
 
 class SmartThermostat implements SmartDevice{
@@ -64,6 +70,10 @@ class SmartThermostat implements SmartDevice{
         String s = "Thermostat: " + (on ? "ON" : "OFF");
 
         return s;
+    }
+
+    public SmartDevice getType() {
+        return this;
     }
 }
 
@@ -95,6 +105,10 @@ class SmartSpeaker implements SmartDevice{
         String s = "Speaker: " + (on ? "Playing" : "Idle");
 
         return s;
+    }
+
+    public SmartDevice getType() {
+        return this;
     }
 }
 
@@ -131,6 +145,13 @@ class Room implements SmartDevice{
         }
         return s;
     }
+
+    public SmartDevice getType() {
+        return this;
+    }
+
+    public List<SmartDevice> getDevices() { return devices; }
+
 }
 
 
@@ -180,6 +201,10 @@ class Home implements SmartDevice{
     public void addRoom(Room room) {
         rooms.add(room);
     }
+
+    public SmartDevice getType() {
+        return this;
+    }
 }
 
 abstract class deviceDecorator implements SmartDevice{
@@ -207,6 +232,10 @@ abstract class deviceDecorator implements SmartDevice{
     @Override
     public String getStatus() {
        return wrappee.getStatus();
+    }
+
+    public SmartDevice getType() {
+        return wrappee.getType();
     }
 }
 
@@ -341,6 +370,106 @@ abstract class modeDecorator extends Room{
     public String getStatus() {
         return wrappee.getStatus();
     }
+
+    @Override
+    public List<SmartDevice> getDevices() {
+        return wrappee.getDevices();
+    }
+
+    public SmartDevice getType() {
+        return wrappee.getType();
+    }
+}
+
+class EcoMode extends modeDecorator{
+    private double budget;
+    public EcoMode(Room wrappee, double budget) {
+        super(wrappee);
+        this.budget = budget;
+    }
+
+    @Override
+    public void activate() {
+
+        super.activate();
+        if (super.getPowerUsage() > budget) {
+            List<SmartDevice> devices = super.getDevices();
+            for (int i = devices.size() - 1; i >= 0 && super.getPowerUsage() > budget; i--) {
+                SmartDevice dev = devices.get(i);
+                dev.deactivate();
+                System.out.println("    >> EcoMode: shed [" + dev.getStatus() + "]");
+
+            }
+        }
+    }
+
+    @Override
+    public double getPowerUsage() {
+        double total = super.getPowerUsage();
+        if(total > budget) total = budget;
+        return total;
+    }
+
+    @Override
+    public String getStatus() {
+        StringBuilder sb = new StringBuilder("[" + name + "]");
+        sb.insert(0, super.getStatus());
+        sb.insert(0, "[ECO: " + budget + "W budget]\n");
+        return sb.toString();
+    }
+}
+
+class GuestMode extends modeDecorator{
+
+    // <Class<?>> = any unknown class
+    private Set<Class<?>> guestAllowed = new HashSet<>();
+    public GuestMode(Room wrappee, Set<Class<?>> guestAllowed) {
+        super(wrappee);
+        this.guestAllowed = guestAllowed;
+    }
+
+    private boolean check(SmartDevice device){
+        return guestAllowed.contains(device.getType().getClass());
+    }
+
+    @Override
+    public void activate() {
+
+        for(SmartDevice device : super.getDevices()){
+            if(check(device)){
+                device.activate();
+            }
+        }
+    }
+
+    @Override
+    public double getPowerUsage() {
+        double total = 0;
+        for (SmartDevice device : super.getDevices()) {
+
+            if(check(device)){
+                total += device.getPowerUsage();
+            }
+        }
+        return total;
+    }
+
+    @Override
+    public String getStatus() {
+        StringBuilder sb = new StringBuilder("[" + name + "]");
+        sb.insert(0, "[GUEST MODE]\n");
+
+        for (SmartDevice device : super.getDevices()) {
+            if(check(device)){
+                sb.append(device.getStatus());
+            }
+            else{
+                sb.append(" [guest-restricted]");
+            }
+        }
+        return sb.toString();
+    }
+
 }
 
 
