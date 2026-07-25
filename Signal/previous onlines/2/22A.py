@@ -45,6 +45,13 @@ def read_signal_from_file(filename: str, INF: int) -> Signal:
         sig.set_value_at_time(nstart + i, v)
     return sig
 
+def restrict(sig: Signal, start_time: int, end_time: int) -> Signal:
+    """Helper to trim a signal to specific time bounds."""
+    out = Signal(start_time, end_time)
+    for n in out.times():
+        out.set_value_at_time(n, sig.get_value_at_time(n))
+    return out
+
 
 def first_difference(sig: Signal) -> Signal:
     """
@@ -64,8 +71,10 @@ def impulse_from_step_response(step_response: Signal) -> Signal:
     Must use only Signal operations.
     """
     # TODO
-    h_n = first_difference(step_response)
-    h_n.set_value_at_time(-1,0)
+    diff = first_difference(step_response)
+    
+    # 2. Restrict it to the original start and end times to chop off the tail
+    h_n = restrict(diff, step_response.start_time, step_response.end_time)
     return h_n
 
 
@@ -80,6 +89,17 @@ def output_using_step_response(x: Signal, step_response: Signal) -> Signal:
     y = system.output(x)
     return y
 
+
+def step_response_from_impulse(h: Signal, extra=0) -> Signal:
+    """Rebuild step response from impulse via running sum."""
+    out = Signal(h.start_time, h.end_time + extra)
+    running = 0.0
+    
+    for n in out.times():
+        running += h.get_value_at_time(n)
+        out.set_value_at_time(n, running)
+        
+    return out
 
 # Main (demo workflow)
 if __name__ == "__main__":
