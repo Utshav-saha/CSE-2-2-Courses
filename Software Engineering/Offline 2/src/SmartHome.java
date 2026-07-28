@@ -119,6 +119,7 @@ class Room implements SmartDevice{
 
     Room(String name) { this.name = name; }
     public void addDevice(SmartDevice d) { devices.add(d); }
+    public void removeDevice(SmartDevice d) { devices.remove(d); }
 
     public void activate() {
         for (SmartDevice d : devices) d.activate();
@@ -293,8 +294,10 @@ class TimerControlled extends deviceDecorator{
 
     @Override
     public void activate() {
-        timerRunning = true;
         super.activate();
+
+        if(super.getPowerUsage() != 0) timerRunning = true;
+
     }
 
     @Override
@@ -376,8 +379,18 @@ abstract class modeDecorator extends Room{
         return wrappee.getDevices();
     }
 
+    @Override
+    public void addDevice(SmartDevice device) {
+        wrappee.addDevice(device);
+    }
+
     public SmartDevice getType() {
         return wrappee.getType();
+    }
+
+    @Override
+    public void removeDevice(SmartDevice device) {
+        wrappee.removeDevice(device);
     }
 }
 
@@ -396,7 +409,7 @@ class EcoMode extends modeDecorator{
             List<SmartDevice> devices = super.getDevices();
             for (int i = devices.size() - 1; i >= 0 && super.getPowerUsage() > budget; i--) {
                 SmartDevice dev = devices.get(i);
-                dev.deactivate();
+                dev.deactivate(); // but accessRestricted thakle off hobena
                 System.out.println("    >> EcoMode: shed [" + dev.getStatus() + "]");
 
             }
@@ -406,7 +419,7 @@ class EcoMode extends modeDecorator{
     @Override
     public double getPowerUsage() {
         double total = super.getPowerUsage();
-        if(total > budget) total = budget;
+//        if(total > budget) total = budget;
         return total;
     }
 
@@ -417,6 +430,8 @@ class EcoMode extends modeDecorator{
         sb.insert(0, "[ECO: " + budget + "W budget]\n");
         return sb.toString();
     }
+
+
 }
 
 class GuestMode extends modeDecorator{
@@ -435,9 +450,12 @@ class GuestMode extends modeDecorator{
     @Override
     public void activate() {
 
+        // ecomode -> guestmode korle ecomode e jegula off hoye gese ogula thik rakha lagbe
+
+        super.activate();
         for(SmartDevice device : super.getDevices()){
-            if(check(device)){
-                device.activate();
+            if(!check(device)){
+                device.deactivate();
             }
         }
     }
@@ -451,6 +469,7 @@ class GuestMode extends modeDecorator{
                 total += device.getPowerUsage();
             }
         }
+        if(super.getPowerUsage() < total)  total = super.getPowerUsage(); // Ecomode , then guest mode korle , ecomode kisu off kore rakhte pare
         return total;
     }
 
@@ -464,6 +483,7 @@ class GuestMode extends modeDecorator{
                 sb.append(device.getStatus());
             }
             else{
+                sb.append(device.getStatus());
                 sb.append(" [guest-restricted]");
             }
         }

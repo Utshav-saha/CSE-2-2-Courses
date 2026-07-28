@@ -80,10 +80,10 @@ public class SmartHomeTestRunner {
         section("11. ORDER SENSITIVITY");
         testThrottledThenEcoVsRawEco();
 
-//        section("12. UPGRADED DEVICE ON ROOM");
-//        testAccessRestrictedOnRoom();
-//        testTimerControlledOnRoom();
-//        testPrepareForNightOnRoom();
+        section("12. UPGRADED DEVICE ON ROOM");
+        testAccessRestrictedOnRoom();
+        testTimerControlledOnRoom();
+        testPrepareForNightOnRoom();
 //        testUpgradedRoomAddableToHome();
 
         section("13. ROOM-LEVEL TYPE SAFETY");
@@ -522,46 +522,46 @@ public class SmartHomeTestRunner {
 //    //  12. UPGRADED DEVICE ON ROOM
 //    // ============================================================
 //
-//    static void testAccessRestrictedOnRoom() {
-//        Room r = new Room("Test");
-//        r.addDevice(new SmartLight());
-//        r.addDevice(new SmartSpeaker());
-//        AccessRestricted ar = new AccessRestricted(r, 0);
-//
-//        ar.activate();
-//        assertEquals("Locked room: nothing activates", 0.0, ar.getPowerUsage());
-//
-//        ar.unlock(0);
-//        ar.activate();
-//        assertEquals("Unlocked room: all activate", 15.0, ar.getPowerUsage());
-//    }
-//
-//    static void testTimerControlledOnRoom() {
-//        Room r = new Room("Test");
-//        r.addDevice(new SmartLight());
-//        r.addDevice(new SmartThermostat());
-//        TimerControlled tc = new TimerControlled(r, 3600);
-//
-//        tc.activate();
-//        assertEquals("Timed room active", 160.0, tc.getPowerUsage());
-//
-//        tc.simulateTimerExpiry();
-//        assertEquals("Timed room expired", 0.0, tc.getPowerUsage());
-//    }
-//
-//    static void testPrepareForNightOnRoom() {
-//        Room r = new Room("Kids");
-//        r.addDevice(new SmartLight());
-//        r.addDevice(new SmartSpeaker());
-//        r.addDevice(new SmartThermostat());
-//
-//        SmartDevice night = prepareForNight(r);
-//
-//        // Should be locked
-//        night.activate();
-//        assertEquals("Night room locked", 0.0, night.getPowerUsage());
-//    }
-//
+    static void testAccessRestrictedOnRoom() {
+        Room r = new Room("Test");
+        r.addDevice(new SmartLight());
+        r.addDevice(new SmartSpeaker());
+        AccessRestricted ar = new AccessRestricted(r, 0);
+
+        ar.activate();
+        assertEquals("Locked room: nothing activates", 0.0, ar.getPowerUsage());
+
+        ar.unlock(0);
+        ar.activate();
+        assertEquals("Unlocked room: all activate", 15.0, ar.getPowerUsage());
+    }
+
+    static void testTimerControlledOnRoom() {
+        Room r = new Room("Test");
+        r.addDevice(new SmartLight());
+        r.addDevice(new SmartThermostat());
+        TimerControlled tc = new TimerControlled(r, 3600);
+
+        tc.activate();
+        assertEquals("Timed room active", 160.0, tc.getPowerUsage());
+
+        tc.simulateTimerExpiry();
+        assertEquals("Timed room expired", 0.0, tc.getPowerUsage());
+    }
+
+    static void testPrepareForNightOnRoom() {
+        Room r = new Room("Kids");
+        r.addDevice(new SmartLight());
+        r.addDevice(new SmartSpeaker());
+        r.addDevice(new SmartThermostat());
+
+        SmartDevice night = prepareForNight(r);
+
+        // Should be locked
+        night.activate();
+        assertEquals("Night room locked", 0.0, night.getPowerUsage());
+    }
+
 //    static void testUpgradedRoomAddableToHome() {
 //        Room r = new Room("Test");
 //        r.addDevice(new SmartLight());
@@ -573,7 +573,7 @@ public class SmartHomeTestRunner {
 //        assertTrue("Upgraded room in home", h.getStatus() != null);
 //        assertEquals("Home with locked room", 0.0, h.getPowerUsage());
 //    }
-//
+
 //    // ============================================================
 //    //  13. ROOM-LEVEL TYPE SAFETY
 //    // ============================================================
@@ -623,9 +623,9 @@ public class SmartHomeTestRunner {
 //    //  HELPER
 //    // ============================================================
 //
-//    static SmartDevice prepareForNight(SmartDevice entity) {
-//        return new TimerControlled(new AccessRestricted(entity, 0), 3600);
-//    }
+    static SmartDevice prepareForNight(SmartDevice entity) {
+        return new TimerControlled(new AccessRestricted(entity, 0), 3600);
+    }
 
     // ============================================================
     //  ASSERTION UTILITIES
