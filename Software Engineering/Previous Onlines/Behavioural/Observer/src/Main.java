@@ -2,14 +2,22 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        FitnessData fitnessData = new FitnessData();
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        LiveActivityDisplay display = new LiveActivityDisplay();
+        GoalNotifier notifier = new GoalNotifier();
+
+        // Register observers
+        fitnessData.registerObserver(display);
+        fitnessData.registerObserver(notifier);
+
+        // Simulate updates
+        fitnessData.newFitnessDataPushed(500, 5, 20);
+        fitnessData.newFitnessDataPushed(9800, 85, 350);
+        fitnessData.newFitnessDataPushed(10100, 90, 380);
+
+        // Remove logger and reset notifier
+        notifier.reset();
+        fitnessData.dailyReset();
     }
 }
