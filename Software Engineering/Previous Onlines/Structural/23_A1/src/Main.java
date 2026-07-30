@@ -1,147 +1,41 @@
 public class Main {
-
-    private static void printCase(
-            String caseName,
-            Delivery delivery) {
-
-        System.out.println(
-                "\n========================================"
-        );
-
-        System.out.println(caseName);
-
-        System.out.println(
-                "========================================"
-        );
-
-        delivery.displayDetails();
-    }
-
     public static void main(String[] args) {
 
-        /*
-         * Case 1
-         *
-         * Decorative vase: $40
-         * Gift wrapping: $2
-         * Local delivery: 10 miles × $1 = $10
-         *
-         * Total: $52
-         * Time: 1 week
-         */
+        System.out.println("====== CASE 1 ======");
 
-        Item vase = new Gift(
-                "Decorative Vase",
-                40
-        );
+        Item case1Item = new Gift("Vase",40.0);
+        case1Item = new GiftWrapping(case1Item);
 
-        vase = new GiftWrapping(vase);
+        DeliveryRegion local = new Local();
+        Standard package1 = new Standard(local, case1Item, 10);
 
-        Delivery case1 = new LocalDelivery(
-                vase,
-                10,
-                new StandardDeliveryMode()
-        );
-
-        printCase("CASE 1", case1);
+        System.out.println(package1.getTotalCost());
+        System.out.println("Total Cost: $" + package1.getTotalCost());
+        System.out.println("Time: " + package1.getTime());
 
 
-        /*
-         * Case 2
-         *
-         * Wooden souvenir: $60
-         * Gift wrapping: $2
-         * National delivery:
-         *     50 miles × $1 + $20 = $70
-         * Express delivery: $10
-         *
-         * Total: $142
-         * Time: 2 days
-         */
+        System.out.println("\n====== CASE 2 ======");
 
-        Item souvenir = new Gift(
-                "Wooden Souvenir",
-                60
-        );
+        Item case2Item = new Gift("Wooden",60.0);
+        case2Item = new GiftWrapping(case2Item);
 
-        souvenir = new GiftWrapping(souvenir);
+        DeliveryRegion national = new National();
+        Express package2 = new Express(national, case2Item, 50);
 
-        Delivery case2 = new NationalDelivery(
-                souvenir,
-                50,
-                new ExpressDeliveryMode()
-        );
-
-        printCase("CASE 2", case2);
+        System.out.println(package2.getTotalCost());
+        System.out.println("Total Cost: $" + package2.getTotalCost());
+        System.out.println("Time: " + package2.getTime());
 
 
-        /*
-         * Case 3
-         *
-         * Crystal showpiece: $150
-         * International delivery: $500
-         * Priority delivery: $25
-         *
-         * Total: $675
-         * Time: 5 days
-         */
+        System.out.println("\n====== CASE 3 ======");
 
-        Item showpiece = new Gift(
-                "Crystal Showpiece",
-                150
-        );
+        Item case3Item = new Gift("Crystal",150.0);
 
-        Delivery case3 = new InternationalDelivery(
-                showpiece,
-                new PriorityDeliveryMode()
-        );
+        DeliveryRegion international = new International();
+        Priority package3 = new Priority(international, case3Item, 50);
 
-        printCase("CASE 3", case3);
-
-
-        /*
-         * Additional Test 1:
-         * Local delivery with Priority mode
-         */
-
-        Item ornament = new Gift(
-                "Decorative Ornament",
-                30
-        );
-
-        Delivery localPriority = new LocalDelivery(
-                ornament,
-                5,
-                new PriorityDeliveryMode()
-        );
-
-        printCase(
-                "ADDITIONAL TEST: LOCAL PRIORITY",
-                localPriority
-        );
-
-
-        /*
-         * Additional Test 2:
-         * International delivery with Express mode
-         */
-
-        Item souvenirSet = new Gift(
-                "Souvenir Set",
-                100
-        );
-
-        souvenirSet = new GiftWrapping(souvenirSet);
-
-        Delivery internationalExpress =
-                new InternationalDelivery(
-                        souvenirSet,
-                        new ExpressDeliveryMode()
-                );
-
-        printCase(
-                "ADDITIONAL TEST: INTERNATIONAL EXPRESS",
-                internationalExpress
-        );
+        System.out.println(package2.getTotalCost());
+        System.out.println("Total Cost: $" + package3.getTotalCost());
+        System.out.println("Time: " + package3.getTime());
     }
 }

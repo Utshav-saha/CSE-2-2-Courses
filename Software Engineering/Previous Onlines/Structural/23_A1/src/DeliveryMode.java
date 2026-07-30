@@ -1,11 +1,22 @@
-public interface DeliveryMode {
+abstract class DeliveryMode implements Mode{
 
-    double getAdditionalCharge();
+    protected DeliveryRegion region;
+    protected Item item;
+    protected int miles;
 
-    String getEstimatedTime(
-            RegionCategory category,
-            String standardDeliveryTime
-    );
+    DeliveryMode(DeliveryRegion region, Item item, int miles) {
+        this.region = region;
+        this.item = item;
+        this.miles = miles;
+    }
 
-    String getModeName();
+    @Override
+    public double getTotalCost() {
+        return region.getRegionCost(miles) + item.getPrice();
+    }
+
+    @Override
+    public String getTime() {
+        return region.getTime();
+    }
 }
