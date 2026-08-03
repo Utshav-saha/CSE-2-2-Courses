@@ -469,7 +469,7 @@ class GuestMode extends modeDecorator{
                 total += device.getPowerUsage();
             }
         }
-        if(super.getPowerUsage() < total)  total = super.getPowerUsage(); // Ecomode , then guest mode korle , ecomode kisu off kore rakhte pare
+//        if(super.getPowerUsage() < total)  total = super.getPowerUsage(); // Ecomode , then guest mode korle , ecomode kisu off kore rakhte pare
         return total;
     }
 

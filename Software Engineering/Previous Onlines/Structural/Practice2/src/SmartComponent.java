@@ -1,0 +1,3 @@
+interface SmartComponent {
+    void monitor();
+}
