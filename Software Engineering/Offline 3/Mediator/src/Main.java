@@ -2,14 +2,46 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        Mediator Coordinator = new Coordinator();
+
+        Dept dept = new Dept(Coordinator);
+        Controller coe = new Controller(Coordinator);
+        Dsw dsw = new Dsw(Coordinator);
+        Student student = new Student(Coordinator, "Utshav");
+
+        Coordinator.registerDept(dept);
+        Coordinator.registerController(coe);
+        Coordinator.registerDsw(dsw);
+        Coordinator.registerStudent(student);
+
+        coe.issueCertificate(); // Wrong
+        System.out.println();
+
+        dept.confirm();
+        System.out.println();
+
+        coe.issueCertificate(); // Wrong
+        System.out.println();
+
+        student.getStatus();
+        System.out.println();
+
+        coe.issueOrder();
+        System.out.println();
+
+        dsw.issueTestimonial();
+        System.out.println();
+
+        coe.issueCertificate();
+        System.out.println();
+
+        dept.confirm(); // Already Done
+        System.out.println();
+
+        student.getStatus();
+        System.out.println();
+
+
     }
 }
