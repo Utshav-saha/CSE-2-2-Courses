@@ -31,15 +31,15 @@ You should be able to:
 
 A signal such as
 
-$$
+```math
 x(t)=0.5\cos(4t)+0.5\sin(6t)
-$$
+```
 
 was differentiated and the property
 
-$$
+```math
 \mathcal{F}\left\{\frac{dx}{dt}\right\}=j2\pi fX(f)
-$$
+```
 
 was verified numerically.
 
@@ -58,15 +58,15 @@ Students had to:
 
 A property-verification question usually has two paths:
 
-$$
+```math
 \boxed{\text{theoretical Fourier-domain prediction}}
-$$
+```
 
 versus
 
-$$
+```math
 \boxed{\text{numerically measured transform}}
-$$
+```
 
 and then an error metric.
 
@@ -76,35 +76,35 @@ and then an error metric.
 
 Given
 
-$$
+```math
 x(t)=e^{-t^2}
-$$
+```
 
 and
 
-$$
+```math
 y(t)=x(t-t_0),
-$$
+```
 
 verify
 
-$$
+```math
 \boxed{Y(f)=X(f)e^{-j2\pi ft_0}}.
-$$
+```
 
 Consequences:
 
-$$
+```math
 |Y(f)|=|X(f)|
-$$
+```
 
 and
 
-$$
+```math
 \angle Y(f)
 =
 \angle X(f)-2\pi ft_0.
-$$
+```
 
 ### Reusable lesson
 
@@ -118,12 +118,12 @@ A signal made from square and triangular components was modified by modulation a
 
 Useful combined property:
 
-$$
+```math
 x(at)e^{j2\pi f_0t}
 \leftrightarrow
 \frac1{|a|}
 X\left(\frac{f-f_0}{a}\right).
-$$
+```
 
 ### Reusable lesson
 
@@ -135,13 +135,13 @@ The exam can combine two properties in one transformation.
 
 Students implemented a piecewise signal and verified
 
-$$
+```math
 \boxed{
 \int_{-\infty}^{\infty}|x(t)|^2dt
 =
 \int_{-\infty}^{\infty}|X(f)|^2df
 }.
-$$
+```
 
 ### Reusable lesson
 
@@ -173,61 +173,61 @@ The instructor may reuse Fourier machinery in a new application rather than aski
 
 A 2D drawing is represented as one complex periodic signal:
 
-$$
+```math
 \boxed{
 f(t)=x(t)+jy(t)
 }
-$$
+```
 
 over one period $T$.
 
 Its complex Fourier series is
 
-$$
+```math
 \boxed{
 f(t)=\sum_{n=-\infty}^{\infty}c_ne^{jn\omega_0t}
 }
-$$
+```
 
 where
 
-$$
+```math
 \boxed{
 \omega_0=\frac{2\pi}{T}
 }
-$$
+```
 
 and
 
-$$
+```math
 \boxed{
 c_n=
 \frac1T
 \int_0^T
 f(t)e^{-jn\omega_0t}dt
 }.
-$$
+```
 
 With $N$ harmonics on each side,
 
-$$
+```math
 \boxed{
 \hat f_N(t)=
 \sum_{n=-N}^{N}c_ne^{jn\omega_0t}
 }
-$$
+```
 
 and the number of terms is
 
-$$
+```math
 \boxed{2N+1}.
-$$
+```
 
 For $N=150$,
 
-$$
+```math
 2(150)+1=301.
-$$
+```
 
 ---
 
@@ -299,29 +299,29 @@ def approximate(self, t):
 
 Each term
 
-$$
+```math
 c_ne^{jn\omega_0t}
-$$
+```
 
 is a rotating vector.
 
 - radius:
 
-$$
+```math
 |c_n|
-$$
+```
 
 - initial angle:
 
-$$
+```math
 \angle c_n
-$$
+```
 
 - angular speed:
 
-$$
+```math
 n\omega_0.
-$$
+```
 
 So:
 
@@ -336,21 +336,21 @@ Do not confuse **coefficient magnitude** with **harmonic number**.
 
 For the finite coefficient set,
 
-$$
+```math
 \boxed{
 E_n=|c_n|^2
 }
-$$
+```
 
 and
 
-$$
+```math
 \boxed{
 E_{\text{total}}
 =
 \sum_{n=-N}^{N}|c_n|^2
 }.
-$$
+```
 
 This is the basis of the harmonic-pruning problem.
 
@@ -368,15 +368,15 @@ prune_harmonics_by_energy(self, r)
 
 where
 
-$$
+```math
 r\in(0,1].
-$$
+```
 
 Retain the **minimum number of most energetic harmonics** whose cumulative energy reaches at least
 
-$$
+```math
 rE_{\text{total}}.
-$$
+```
 
 All other coefficients become zero.
 
@@ -387,7 +387,7 @@ Return:
 
 Then implement reconstruction MSE:
 
-$$
+```math
 \boxed{
 \text{MSE}
 =
@@ -395,14 +395,14 @@ $$
 \sum_{i=1}^{M}
 |f(t_i)-\hat f(t_i)|^2
 }.
-$$
+```
 
 Test:
 
-$$
+```math
 r\in
 \{0.96,0.98,0.99,1.00\}.
-$$
+```
 
 ---
 
@@ -455,9 +455,9 @@ harmonic:  -N      -N+1     ...      0       ...       N
 
 Therefore
 
-$$
+```math
 \boxed{n=\text{idx}-N}.
-$$
+```
 
 ---
 
@@ -539,15 +539,15 @@ def evaluate_reconstruction_error(self):
 
 For the complex drawing,
 
-$$
+```math
 |f-\hat f|^2
-$$
+```
 
 is equivalent to
 
-$$
+```math
 (\Delta x)^2+(\Delta y)^2.
-$$
+```
 
 ---
 
@@ -596,21 +596,21 @@ and restore it before each experiment.
 
 As
 
-$$
+```math
 r\uparrow,
-$$
+```
 
 generally
 
-$$
+```math
 \text{harmonics retained}\uparrow
-$$
+```
 
 and
 
-$$
+```math
 \text{reconstruction MSE}\downarrow.
-$$
+```
 
 For $N=150$ and $r=1$, expect all $301$ harmonics to remain.
 
@@ -622,35 +622,35 @@ For $N=150$ and $r=1$, expect all $301$ harmonics to remain.
 
 If
 
-$$
+```math
 g(t)=f(t-t_0),
-$$
+```
 
 then
 
-$$
+```math
 \boxed{
 d_n=c_ne^{-jn\omega_0t_0}
 }.
-$$
+```
 
 Therefore
 
-$$
+```math
 |d_n|=|c_n|.
-$$
+```
 
 ---
 
 ## Time reversal
 
-$$
+```math
 \boxed{
 f(-t)
 \Rightarrow
 d_n=c_{-n}
 }
-$$
+```
 
 ---
 
@@ -658,21 +658,21 @@ $$
 
 If
 
-$$
+```math
 g(t)=Af(t),
-$$
+```
 
 then
 
-$$
+```math
 \boxed{d_n=Ac_n}.
-$$
+```
 
 If
 
-$$
+```math
 A=\rho e^{j\theta},
-$$
+```
 
 then $\rho$ scales the drawing and $e^{j\theta}$ rotates it.
 
@@ -682,50 +682,50 @@ then $\rho$ scales the drawing and $e^{j\theta}$ rotates it.
 
 If
 
-$$
+```math
 g(t)=f(t)+B,
-$$
+```
 
 then only the DC coefficient changes:
 
-$$
+```math
 \boxed{d_0=c_0+B}
-$$
+```
 
 and for $n\ne0$,
 
-$$
+```math
 \boxed{d_n=c_n}.
-$$
+```
 
 ---
 
 ## Differentiation
 
-$$
+```math
 \boxed{
 d_n=jn\omega_0c_n
 }
-$$
+```
 
 because
 
-$$
+```math
 \frac{d}{dt}
 e^{jn\omega_0t}
 =
 jn\omega_0e^{jn\omega_0t}.
-$$
+```
 
 Magnitude:
 
-$$
+```math
 \boxed{
 |d_n|
 =
 |n|\omega_0|c_n|
 }.
-$$
+```
 
 High-order harmonics are amplified more strongly.
 
@@ -733,7 +733,7 @@ High-order harmonics are amplified more strongly.
 
 ## Fourier-Series Parseval
 
-$$
+```math
 \boxed{
 \frac1T
 \int_0^T
@@ -741,7 +741,7 @@ $$
 =
 \sum_n|c_n|^2
 }.
-$$
+```
 
 For finite $N$, compare the numerical time-domain energy with the finite coefficient sum.
 
@@ -759,7 +759,7 @@ keep_top_harmonics(self, k)
 
 Return
 
-$$
+```math
 \boxed{
 R_E=
 \frac{
@@ -768,7 +768,7 @@ R_E=
 \sum_n|c_n|^2
 }
 }.
-$$
+```
 
 Test:
 
@@ -778,19 +778,19 @@ K = [10, 20, 50, 100, 301]
 
 Expected:
 
-$$
+```math
 K\uparrow
 \Rightarrow
 R_E\uparrow
-$$
+```
 
 and
 
-$$
+```math
 K\uparrow
 \Rightarrow
 \text{MSE}\downarrow.
-$$
+```
 
 ---
 
@@ -798,17 +798,17 @@ $$
 
 Given
 
-$$
+```math
 g(t)=f(t-t_0),
-$$
+```
 
 predict:
 
-$$
+```math
 \boxed{
 d_n=c_ne^{-jn\omega_0t_0}
 }.
-$$
+```
 
 Implement:
 
@@ -820,9 +820,9 @@ and reconstruct using the predicted coefficients.
 
 Verify:
 
-$$
+```math
 |d_n|\approx|c_n|.
-$$
+```
 
 Main trap:
 
@@ -834,17 +834,17 @@ Main trap:
 
 Use
 
-$$
+```math
 \boxed{
 d_n=jn\omega_0c_n
 }
-$$
+```
 
 to reconstruct
 
-$$
+```math
 f'(t).
-$$
+```
 
 Implement:
 
@@ -872,25 +872,25 @@ only as a numerical verification if allowed.
 
 Keep only
 
-$$
+```math
 |n|\le K.
-$$
+```
 
 Thus
 
-$$
+```math
 c'_n=
 \begin{cases}
 c_n,&|n|\le K\\
 0,&|n|>K.
 \end{cases}
-$$
+```
 
 The retained harmonic count is
 
-$$
+```math
 \boxed{2K+1}.
-$$
+```
 
 Test:
 
@@ -908,13 +908,13 @@ For the same number of coefficients, energy pruning is usually more efficient be
 
 For
 
-$$
+```math
 c_n=a_n+jb_n,
-$$
+```
 
 quantize with
 
-$$
+```math
 \boxed{
 Q(x)
 =
@@ -924,35 +924,35 @@ Q(x)
 \frac{x}{\Delta}
 \right)
 }
-$$
+```
 
 and
 
-$$
+```math
 \boxed{
 \tilde c_n
 =
 Q(a_n)+jQ(b_n)
 }.
-$$
+```
 
 Example:
 
-$$
+```math
 0.137+0.064j
-$$
+```
 
 with
 
-$$
+```math
 \Delta=0.05
-$$
+```
 
 becomes approximately
 
-$$
+```math
 0.15+0.05j.
-$$
+```
 
 Measure:
 
@@ -967,13 +967,13 @@ Require $+n$ and $-n$ to be retained together.
 
 Pair energy:
 
-$$
+```math
 \boxed{
 E_{\text{pair}}(n)
 =
 |c_n|^2+|c_{-n}|^2
 }.
-$$
+```
 
 Always retain $c_0$.
 
@@ -1045,9 +1045,9 @@ Symmetric pruning may retain more coefficients because it can be forced to keep 
 
 Given a tolerance $\epsilon$, keep the smallest number of harmonics such that
 
-$$
+```math
 \boxed{\text{MSE}\le\epsilon}.
-$$
+```
 
 Add harmonics in descending energy order.
 
@@ -1116,13 +1116,13 @@ Stop at the **first** MSE satisfying the tolerance.
 
 Define
 
-$$
+```math
 \boxed{
 g(t)
 =
 Ae^{j\theta}f(t-t_0)+B
 }.
-$$
+```
 
 Interpretation:
 
@@ -1133,26 +1133,26 @@ Interpretation:
 
 Start from
 
-$$
+```math
 f(t-t_0)
 =
 \sum_n
 c_ne^{jn\omega_0(t-t_0)}
-$$
+```
 
 so
 
-$$
+```math
 f(t-t_0)
 =
 \sum_n
 c_ne^{-jn\omega_0t_0}
 e^{jn\omega_0t}.
-$$
+```
 
 Therefore:
 
-$$
+```math
 \boxed{
 d_n
 =
@@ -1160,17 +1160,17 @@ Ae^{j\theta}
 c_ne^{-jn\omega_0t_0},
 \quad n\ne0
 }
-$$
+```
 
 and because $B$ is a constant/DC term,
 
-$$
+```math
 \boxed{
 d_0
 =
 Ae^{j\theta}c_0+B
 }.
-$$
+```
 
 Implementation:
 
@@ -1213,11 +1213,11 @@ Use two paths.
 
 Theoretical:
 
-$$
+```math
 c_n
 \rightarrow
 d_n^{predicted}.
-$$
+```
 
 Numerical:
 
@@ -1229,7 +1229,7 @@ Then compare magnitude and phase.
 
 Magnitude MSE:
 
-$$
+```math
 \boxed{
 \text{MSE}_{mag}
 =
@@ -1241,11 +1241,11 @@ $$
 |d_n^{predicted}|
 \right)^2
 }.
-$$
+```
 
 Phase must be wrapped:
 
-$$
+```math
 \boxed{
 \Delta\phi
 =
@@ -1256,7 +1256,7 @@ e^{j(
 )}
 \right]
 }.
-$$
+```
 
 ---
 
@@ -1264,34 +1264,34 @@ $$
 
 Split into:
 
-$$
+```math
 L:\ |n|\le10,
-$$
+```
 
-$$
+```math
 M:\ 10<|n|\le50,
-$$
+```
 
-$$
+```math
 H:\ |n|>50.
-$$
+```
 
 Apply
 
-$$
+```math
 d_n=
 \begin{cases}
 c_n,&|n|\le10\\
 \alpha c_n,&10<|n|\le50\\
 \beta c_n,&|n|>50.
 \end{cases}
-$$
+```
 
 Take
 
-$$
+```math
 \alpha=1.2
-$$
+```
 
 and search
 
@@ -1304,9 +1304,9 @@ beta_candidates = [
 
 for the largest $\beta$ satisfying
 
-$$
+```math
 \boxed{\text{MSE}\le0.002}.
-$$
+```
 
 Also compute low/mid/high energy ratios.
 
@@ -1320,7 +1320,7 @@ Important:
 
 Pipeline:
 
-$$
+```math
 \boxed{
 \text{original}
 \rightarrow
@@ -1330,7 +1330,7 @@ $$
 \rightarrow
 \text{reconstruction}
 }.
-$$
+```
 
 Test:
 
@@ -1352,9 +1352,9 @@ deltas = [
 
 Total configurations:
 
-$$
+```math
 4\times4=16.
-$$
+```
 
 For each calculate:
 
@@ -1365,7 +1365,7 @@ For each calculate:
 
 Coefficient MSE:
 
-$$
+```math
 \boxed{
 \text{MSE}_c
 =
@@ -1373,11 +1373,11 @@ $$
 \sum_n
 |c_n-\tilde c_n|^2
 }.
-$$
+```
 
 Signal MSE:
 
-$$
+```math
 \boxed{
 \text{MSE}_{signal}
 =
@@ -1385,15 +1385,15 @@ $$
 \sum_i
 |f(t_i)-\hat f(t_i)|^2
 }.
-$$
+```
 
 A configuration is valid if
 
-$$
+```math
 \boxed{
 \text{MSE}_{signal}\le0.001
 }.
-$$
+```
 
 Best configuration:
 
@@ -1413,15 +1413,15 @@ These are other plausible exam variants discussed during preparation.
 
 Compare:
 
-$$
+```math
 f(t-t_0)
-$$
+```
 
 with
 
-$$
+```math
 f(t)+B.
-$$
+```
 
 The first changes the starting point along the same closed curve.
 
@@ -1429,22 +1429,22 @@ The second moves the whole curve in the complex plane.
 
 Coefficient rules:
 
-$$
+```math
 f(t-t_0)
 \Rightarrow
 c_ne^{-jn\omega_0t_0}
-$$
+```
 
 and
 
-$$
+```math
 f(t)+B
 \Rightarrow
 \begin{cases}
 c_0+B,&n=0\\
 c_n,&n\ne0.
 \end{cases}
-$$
+```
 
 ---
 
@@ -1452,15 +1452,15 @@ $$
 
 Given
 
-$$
+```math
 g(t)=f(-t),
-$$
+```
 
 verify
 
-$$
+```math
 \boxed{d_n=c_{-n}}.
-$$
+```
 
 Numerically:
 
@@ -1474,19 +1474,19 @@ Numerically:
 
 Compute:
 
-$$
+```math
 E_t=
 \frac1T
 \int_0^T
 |f(t)|^2dt
-$$
+```
 
 and
 
-$$
+```math
 E_c=
 \sum_{n=-N}^{N}|c_n|^2.
-$$
+```
 
 Then measure:
 
@@ -1529,18 +1529,18 @@ Expected:
 
 For
 
-$$
+```math
 g(x,y)=I(x-x_0,y-y_0),
-$$
+```
 
 verify
 
-$$
+```math
 \boxed{
 G(u,v)=
 F(u,v)e^{-j2\pi(ux_0+vy_0)}
 }.
-$$
+```
 
 Magnitude is unchanged.
 
@@ -1550,11 +1550,11 @@ Magnitude is unchanged.
 
 For a real image,
 
-$$
+```math
 \boxed{
 F(-u,-v)=F^*(u,v)
 }.
-$$
+```
 
 Possible task:
 
@@ -1598,7 +1598,7 @@ Multiply the image by a cosine pattern.
 
 Using
 
-$$
+```math
 \cos(2\pi u_0x)
 =
 \frac12
@@ -1606,7 +1606,7 @@ e^{j2\pi u_0x}
 +
 \frac12
 e^{-j2\pi u_0x},
-$$
+```
 
 the spectrum should split/shift into two copies.
 
@@ -1618,9 +1618,9 @@ A plausible online could ask you to generate the modulated image and verify the 
 
 If
 
-$$
+```math
 g(x,y)=I(ax,by),
-$$
+```
 
 then the spectrum scales differently along $u$ and $v$.
 
@@ -1632,13 +1632,13 @@ This is harder because horizontal and vertical scaling must be handled independe
 
 Verify:
 
-$$
+```math
 \boxed{
 \iint |I(x,y)|^2dxdy
 =
 \iint |F(u,v)|^2dudv
 }
-$$
+```
 
 using nested `np.trapezoid`.
 
@@ -1648,44 +1648,44 @@ using nested `np.trapezoid`.
 
 Using ordinary frequency $f$:
 
-$$
+```math
 \boxed{
 X(f)=
 \int_{-\infty}^{\infty}
 x(t)e^{-j2\pi ft}dt
 }
-$$
+```
 
 and inverse:
 
-$$
+```math
 \boxed{
 x(t)=
 \int_{-\infty}^{\infty}
 X(f)e^{j2\pi ft}df
 }.
-$$
+```
 
 Using angular frequency $\omega$:
 
-$$
+```math
 \boxed{
 X(\omega)=
 \int_{-\infty}^{\infty}
 x(t)e^{-j\omega t}dt
 }
-$$
+```
 
 and
 
-$$
+```math
 \boxed{
 x(t)=
 \frac1{2\pi}
 \int_{-\infty}^{\infty}
 X(\omega)e^{j\omega t}d\omega
 }.
-$$
+```
 
 ---
 
@@ -1693,21 +1693,21 @@ $$
 
 If the variable is ordinary frequency $f$ in cycles per second:
 
-$$
+```math
 e^{-j2\pi ft}.
-$$
+```
 
 If the variable is angular frequency $\omega$ in radians per second:
 
-$$
+```math
 e^{-j\omega t}.
-$$
+```
 
 Because:
 
-$$
+```math
 \boxed{\omega=2\pi f}.
-$$
+```
 
 Do not mix the two conventions.
 
@@ -1769,94 +1769,94 @@ integrates across time.
 
 ## Time shift
 
-$$
+```math
 \boxed{
 x(t-t_0)
 \leftrightarrow
 X(f)e^{-j2\pi ft_0}
 }
-$$
+```
 
 ---
 
 ## Frequency shift / modulation
 
-$$
+```math
 \boxed{
 x(t)e^{j2\pi f_0t}
 \leftrightarrow
 X(f-f_0)
 }
-$$
+```
 
 ---
 
 ## Time scaling
 
-$$
+```math
 \boxed{
 x(at)
 \leftrightarrow
 \frac1{|a|}
 X\left(\frac{f}{a}\right)
 }
-$$
+```
 
 ---
 
 ## Time reversal
 
-$$
+```math
 \boxed{
 x(-t)
 \leftrightarrow
 X(-f)
 }
-$$
+```
 
 ---
 
 ## Differentiation
 
-$$
+```math
 \boxed{
 \frac{dx}{dt}
 \leftrightarrow
 j2\pi fX(f)
 }
-$$
+```
 
 Repeated derivative:
 
-$$
+```math
 \boxed{
 \frac{d^kx}{dt^k}
 \leftrightarrow
 (j2\pi f)^kX(f)
 }
-$$
+```
 
 ---
 
 ## Multiplication / convolution
 
-$$
+```math
 \boxed{
 x(t)y(t)
 \leftrightarrow
 X(f)*Y(f)
 }
-$$
+```
 
 and
 
-$$
+```math
 \boxed{
 x(t)*y(t)
 \leftrightarrow
 X(f)Y(f)
 }
-$$
+```
 
 ---
 
@@ -1864,13 +1864,13 @@ $$
 
 For the $f$-based convention:
 
-$$
+```math
 \boxed{
 \int|x(t)|^2dt
 =
 \int|X(f)|^2df
 }.
-$$
+```
 
 ---
 
@@ -1878,40 +1878,40 @@ $$
 
 Let:
 
-$$
+```math
 y(t)=x(at).
-$$
+```
 
 Then:
 
-$$
+```math
 Y(f)
 =
 \int
 x(at)e^{-j2\pi ft}dt.
-$$
+```
 
 Use:
 
-$$
+```math
 \tau=at.
-$$
+```
 
 Then:
 
-$$
+```math
 t=\frac{\tau}{a}.
-$$
+```
 
 Accounting for the direction of integration when $a<0$:
 
-$$
+```math
 dt=\frac{d\tau}{|a|}.
-$$
+```
 
 Therefore:
 
-$$
+```math
 Y(f)
 =
 \frac1{|a|}
@@ -1919,18 +1919,18 @@ Y(f)
 x(\tau)
 e^{-j2\pi(f/a)\tau}
 d\tau.
-$$
+```
 
 Hence:
 
-$$
+```math
 \boxed{
 Y(f)
 =
 \frac1{|a|}
 X\left(\frac{f}{a}\right)
 }.
-$$
+```
 
 ---
 
@@ -1938,17 +1938,17 @@ $$
 
 For
 
-$$
+```math
 X=a+jb,
-$$
+```
 
 magnitude:
 
-$$
+```math
 \boxed{
 |X|=\sqrt{a^2+b^2}
 }
-$$
+```
 
 Python:
 
@@ -1970,9 +1970,9 @@ returns radians.
 
 When:
 
-$$
+```math
 |X|\approx0,
-$$
+```
 
 phase becomes numerically unstable and physically unimportant.
 
@@ -2008,21 +2008,21 @@ Plain phase subtraction is dangerous because phase is circular.
 
 Example:
 
-$$
+```math
 179^\circ
-$$
+```
 
 and
 
-$$
+```math
 -179^\circ
-$$
+```
 
 are only $2^\circ$ apart.
 
 Use:
 
-$$
+```math
 \boxed{
 \Delta\phi=
 \angle
@@ -2032,7 +2032,7 @@ e^{j(
 )}
 \right)
 }.
-$$
+```
 
 Python:
 
@@ -2063,7 +2063,7 @@ phase_mse = np.mean(
 
 For grayscale image $I(x,y)$:
 
-$$
+```math
 \boxed{
 F(u,v)
 =
@@ -2072,7 +2072,7 @@ I(x,y)
 e^{-j2\pi(ux+vy)}
 dxdy
 }
-$$
+```
 
 where:
 
@@ -2083,7 +2083,7 @@ where:
 
 Inverse:
 
-$$
+```math
 \boxed{
 I(x,y)=
 \iint
@@ -2091,7 +2091,7 @@ F(u,v)
 e^{j2\pi(ux+vy)}
 dudv
 }.
-$$
+```
 
 ---
 
@@ -2172,15 +2172,15 @@ Brightness itself is not frequency.
 
 Using:
 
-$$
+```math
 e^{-j\theta}
 =
 \cos\theta-j\sin\theta,
-$$
+```
 
 we get:
 
-$$
+```math
 \boxed{
 \Re\{F(u,v)\}
 =
@@ -2189,11 +2189,11 @@ I(x,y)
 \cos(2\pi(ux+vy))
 dxdy
 }
-$$
+```
 
 and
 
-$$
+```math
 \boxed{
 \Im\{F(u,v)\}
 =
@@ -2203,7 +2203,7 @@ I(x,y)
 \sin(2\pi(ux+vy))
 dxdy
 }.
-$$
+```
 
 The current assignment explicitly uses real cosine/sine arithmetic.
 
@@ -2213,9 +2213,9 @@ The current assignment explicitly uses real cosine/sine arithmetic.
 
 Direct computation over all
 
-$$
+```math
 x,y,u,v
-$$
+```
 
 would be roughly $O(N^4)$.
 
@@ -2228,21 +2228,21 @@ This is the essential optimization.
 
 Angle-sum identities:
 
-$$
+```math
 \cos(A+B)
 =
 \cos A\cos B
 -
 \sin A\sin B
-$$
+```
 
-$$
+```math
 \sin(A+B)
 =
 \sin A\cos B
 +
 \cos A\sin B.
-$$
+```
 
 These let the $ux$ and $vy$ dependence separate.
 
@@ -2351,7 +2351,7 @@ for v_idx, v_val in enumerate(self.v):
 
 # 38. Magnitude Spectrum
 
-$$
+```math
 \boxed{
 |F(u,v)|
 =
@@ -2359,7 +2359,7 @@ $$
 \Re(F)^2+\Im(F)^2
 }
 }
-$$
+```
 
 Python:
 
@@ -2390,9 +2390,9 @@ plt.imshow(
 
 `np.log1p(x)` means:
 
-$$
+```math
 \log(1+x).
-$$
+```
 
 It makes weaker spectral components visible.
 
@@ -2505,7 +2505,7 @@ Be careful:
 
 # 43. Inverse 2D CFT
 
-$$
+```math
 \boxed{
 I(x,y)=
 \iint
@@ -2513,7 +2513,7 @@ F(u,v)
 e^{j2\pi(ux+vy)}
 dudv
 }
-$$
+```
 
 Again separate cosine and sine and perform two 1D integrations.
 
@@ -2649,9 +2649,9 @@ np.exp(1j * theta)
 
 represents
 
-$$
+```math
 e^{j\theta}.
-$$
+```
 
 Used in:
 
@@ -3110,9 +3110,9 @@ np.log1p(magnitude)
 
 means:
 
-$$
+```math
 \log(1+\text{magnitude}).
-$$
+```
 
 Useful for spectrum visualization.
 
@@ -3264,11 +3264,11 @@ range(-N, N + 1)
 
 Analysis:
 
-$$
+```math
 c_n=
 \frac1T
 \int f(t)e^{-jn\omega_0t}dt.
-$$
+```
 
 Reconstruction does not get another $1/T$.
 
@@ -3278,41 +3278,41 @@ Reconstruction does not get another $1/T$.
 
 Analysis:
 
-$$
+```math
 e^{-jn\omega_0t}
-$$
+```
 
 Synthesis:
 
-$$
+```math
 e^{+jn\omega_0t}.
-$$
+```
 
 CFT:
 
-$$
+```math
 e^{-j2\pi ft}
-$$
+```
 
 Inverse CFT:
 
-$$
+```math
 e^{+j2\pi ft}.
-$$
+```
 
 ---
 
 ## Pitfall 5 — Time shift vs drawing translation
 
-$$
+```math
 f(t-t_0)
-$$
+```
 
 changes the tracing start.
 
-$$
+```math
 f(t)+B
-$$
+```
 
 moves the entire shape.
 
@@ -3395,15 +3395,15 @@ Every trial must start from the same reference spectrum.
 
 If the energy list corresponds to:
 
-$$
+```math
 -N,\ldots,N,
-$$
+```
 
 then:
 
-$$
+```math
 \boxed{n=idx-N}.
-$$
+```
 
 ---
 
@@ -3486,17 +3486,17 @@ Write the mathematical rule first.
 
 Examples:
 
-$$
+```math
 E_n=|c_n|^2
-$$
+```
 
 or
 
-$$
+```math
 d_n=
 Ae^{j\theta}
 c_ne^{-jn\omega_0t_0}.
-$$
+```
 
 This prevents implementing the wrong operation.
 
@@ -3663,92 +3663,92 @@ for parameter in parameters:
 
 ## Fourier Series
 
-$$
+```math
 \boxed{
 \omega_0=\frac{2\pi}{T}
 }
-$$
+```
 
-$$
+```math
 \boxed{
 c_n=
 \frac1T
 \int_0^T
 f(t)e^{-jn\omega_0t}dt
 }
-$$
+```
 
-$$
+```math
 \boxed{
 f(t)=
 \sum_n
 c_ne^{jn\omega_0t}
 }
-$$
+```
 
-$$
+```math
 \boxed{
 E_n=|c_n|^2
 }
-$$
+```
 
-$$
+```math
 \boxed{
 E_{\text{total}}
 =
 \sum_n|c_n|^2
 }
-$$
+```
 
 Time shift:
 
-$$
+```math
 \boxed{
 f(t-t_0)
 \Rightarrow
 c_ne^{-jn\omega_0t_0}
 }
-$$
+```
 
 Time reversal:
 
-$$
+```math
 \boxed{
 f(-t)
 \Rightarrow
 c_{-n}
 }
-$$
+```
 
 Derivative:
 
-$$
+```math
 \boxed{
 f'(t)
 \Rightarrow
 jn\omega_0c_n
 }
-$$
+```
 
 Scale/rotation:
 
-$$
+```math
 \boxed{
 Af(t)
 \Rightarrow
 Ac_n
 }
-$$
+```
 
 Spatial translation:
 
-$$
+```math
 \boxed{
 f(t)+B
 \Rightarrow
 c_0+B
 }
-$$
+```
 
 for the DC term only.
 
@@ -3756,80 +3756,80 @@ for the DC term only.
 
 ## CFT using $f$
 
-$$
+```math
 \boxed{
 X(f)
 =
 \int
 x(t)e^{-j2\pi ft}dt
 }
-$$
+```
 
-$$
+```math
 \boxed{
 x(t)
 =
 \int
 X(f)e^{j2\pi ft}df
 }
-$$
+```
 
 Time shift:
 
-$$
+```math
 \boxed{
 x(t-t_0)
 \leftrightarrow
 X(f)e^{-j2\pi ft_0}
 }
-$$
+```
 
 Scaling:
 
-$$
+```math
 \boxed{
 x(at)
 \leftrightarrow
 \frac1{|a|}
 X(f/a)
 }
-$$
+```
 
 Modulation:
 
-$$
+```math
 \boxed{
 x(t)e^{j2\pi f_0t}
 \leftrightarrow
 X(f-f_0)
 }
-$$
+```
 
 Derivative:
 
-$$
+```math
 \boxed{
 x'(t)
 \leftrightarrow
 j2\pi fX(f)
 }
-$$
+```
 
 Parseval:
 
-$$
+```math
 \boxed{
 \int|x(t)|^2dt
 =
 \int|X(f)|^2df
 }
-$$
+```
 
 ---
 
 ## 2D CFT
 
-$$
+```math
 \boxed{
 F(u,v)
 =
@@ -3838,9 +3838,9 @@ I(x,y)
 e^{-j2\pi(ux+vy)}
 dxdy
 }
-$$
+```
 
-$$
+```math
 \boxed{
 I(x,y)
 =
@@ -3849,37 +3849,37 @@ F(u,v)
 e^{j2\pi(ux+vy)}
 dudv
 }
-$$
+```
 
 Spatial shift:
 
-$$
+```math
 \boxed{
 I(x-x_0,y-y_0)
 \leftrightarrow
 F(u,v)
 e^{-j2\pi(ux_0+vy_0)}
 }
-$$
+```
 
 Magnitude:
 
-$$
+```math
 \boxed{
 |F|=
 \sqrt{
 \Re(F)^2+\Im(F)^2
 }
 }
-$$
+```
 
 For real images:
 
-$$
+```math
 \boxed{
 F(-u,-v)=F^*(u,v)
 }
-$$
+```
 
 ---
 
@@ -3899,27 +3899,27 @@ If time is limited, study in this order:
 
 The recurring pattern to remember is:
 
-$$
+```math
 \boxed{
 \text{understand the mathematical transformation}
 }
-$$
+```
 
 then
 
-$$
+```math
 \boxed{
 \text{modify only the necessary part of the supplied framework}
 }
-$$
+```
 
 then
 
-$$
+```math
 \boxed{
 \text{verify numerically using the requested metric}
 }.
-$$
+```
 
 ---
 

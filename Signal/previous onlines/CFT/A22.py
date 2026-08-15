@@ -8,6 +8,16 @@ def compute_cft(t, f, signal):
     result = np.trapezoid(signal * exponent, t)
     return result
 
+
+def compute_icft(t, f, signal):
+    
+    exponent = np.exp(1j * 2 * np.pi * np.outer(t,f))
+    
+    result = np.trapezoid(signal * exponent, f)
+    return result
+
+
+
 def mse(y_true, y_pred):
     return np.mean(np.abs(y_true - y_pred) ** 2)
 
