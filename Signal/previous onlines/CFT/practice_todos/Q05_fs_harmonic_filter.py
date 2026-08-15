@@ -15,6 +15,14 @@ Tasks:
 3) Explain why removing high harmonics smooths sharp/small details.
 4) Identify which coefficient contains the spatial center of the drawing.
 """
+
+def low_pass(coeffs:dict, k):
+    for n , c_n in coeffs.items():
+        if(abs(n) > k):
+            coeffs[n] = 0 + 0j
+
+    return coeffs
+    
 import numpy as np
 import matplotlib.pyplot as plt
 

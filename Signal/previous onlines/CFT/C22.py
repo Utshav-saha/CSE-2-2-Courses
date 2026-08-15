@@ -43,7 +43,6 @@ if __name__ == "__main__":
     modified_time , modified_signal = x_t.modify(10)  
     y_t = Solve(modified_time, modified_signal, f)
 
-    X = x_t.compute_cft()
     Y = y_t.compute_cft()
 
     f_shifted_scaled = (f-10) / 10

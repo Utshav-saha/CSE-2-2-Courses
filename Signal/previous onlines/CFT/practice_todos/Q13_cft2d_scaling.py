@@ -17,4 +17,47 @@ No FFT.
 """
 import numpy as np
 
+def scaling(a,b, base_path):
+
+    img_base = ContinuousImage(base_path)
+    cft_base = CFT2D(img_base)
+    real_base, imag_base = cft_base.compute_cft()
+
+    F = real_base + 1j * imag_base
+    u = cft_base.u
+    v = cft_base.v
+
+    scaled_u = u/a
+    scaled_v = v/b
+
+    temp = np.empty((len(v), len(u)), dtype=complex)
+
+    for row in range(len(v)):
+        temp[row: ] = np.interp(scaled_u, u, F[row: ], left= np.nan, right = np.nan)
+
+    predicted = np.empty_like(F)
+
+    for col in range(len(u)):
+            predicted[:col ] = np.interp(scaled_v, v, temp[:col], left= np.nan, right = np.nan)
+
+    predicted /= abs(a*b)
+
+    real_scaling = predicted.real
+    imag_scaling = predicted.imag
+
+
+    # # For spatial reverse
+    # F = real_base + 1j * imag_base
+    # G_predicted = F[::-1, ::-1]
+
+    # # I(-x, y): reverse columns
+    # x_reversed = img_base.image[:, ::-1]
+
+    # # I(x, -y): reverse rows
+    # y_reversed = img_base.image[::-1, :]
+
+    return real_scaling, imag_scaling
+
+
+
 # TODO
