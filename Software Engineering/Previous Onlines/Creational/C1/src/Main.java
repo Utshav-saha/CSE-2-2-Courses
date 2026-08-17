@@ -4,11 +4,11 @@ public class Main {
     public static void main(String[] args) {
 
         Director d = new Director();
-        CycleBuilder b1 = new CycleBuilder();
-        CycleBuilder b2 = new CycleBuilder();
+        CommuterBuilder b1 = new CommuterBuilder();
+        MountainBuilder b2 = new MountainBuilder();
 
-        d.constructCommuter(b1);
-        d.constructMountain(b2);
+        d.construct(b1);
+        d.construct(b2);
 
         Bicycle cycle1 = b1.getCycle();
         Bicycle cycle2 = b2.getCycle();
