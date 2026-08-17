@@ -1,3 +1,3 @@
 public interface TextField {
-    public void print();
+    void render();
 }

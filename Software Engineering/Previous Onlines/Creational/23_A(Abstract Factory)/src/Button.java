@@ -1,4 +1,3 @@
 public interface Button {
-
-    public void print();
+    void render();
 }

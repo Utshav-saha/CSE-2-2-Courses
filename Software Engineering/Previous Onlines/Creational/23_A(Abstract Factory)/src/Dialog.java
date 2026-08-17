@@ -1,3 +1,3 @@
 public interface Dialog {
-    public void print();
+    void render();
 }
