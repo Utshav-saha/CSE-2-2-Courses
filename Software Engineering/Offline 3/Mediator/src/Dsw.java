@@ -6,7 +6,7 @@ public class Dsw extends Component{
 
     public void issueTestimonial(){
         System.out.println("DSW: Issuing testimonial");
-        mediator.issueTestimonial();
+        mediator.notify(this,"issueTestimonial");
     }
 
 }

@@ -26,7 +26,6 @@ public class Coordinator implements Mediator{
         this.student = student;
     }
 
-    @Override
     public void deptConfirm() {
         if(state == States.start ) {
             state = States.deptConfirmed;
@@ -38,7 +37,6 @@ public class Coordinator implements Mediator{
 
     }
 
-    @Override
     public void issueOrder() {
 
         if(state.ordinal() < States.deptConfirmed.ordinal()) {
@@ -55,7 +53,6 @@ public class Coordinator implements Mediator{
 
     }
 
-    @Override
     public void issueTestimonial() {
 
         if(state.ordinal() < States.orderIssued.ordinal()) {
@@ -71,7 +68,6 @@ public class Coordinator implements Mediator{
         }
     }
 
-    @Override
     public void issueCertificate() {
 
         if(state.ordinal() < States.testimonialIssued.ordinal()) {
@@ -88,10 +84,33 @@ public class Coordinator implements Mediator{
 
     }
 
-    @Override
     public void display() {
 
         System.out.println("Current State: " + state.name());
 
     }
+
+    @Override
+    public void notify(Component sender, String event) {
+
+        if(event.equals("issueOrder")) {
+            issueOrder();
+        }
+        else if(event.equals("issueTestimonial")) {
+            issueTestimonial();
+        }
+        else if(event.equals("issueCertificate")) {
+            issueCertificate();
+        }
+        else if(event.equals("deptConfirm")) {
+            deptConfirm();
+        }
+        else if(event.equals("getStatus")){
+            display();
+        }
+
+    }
+
+
+
 }

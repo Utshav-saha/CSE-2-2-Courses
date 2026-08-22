@@ -5,7 +5,7 @@ public class Dept extends Component {
     }
     public void confirm(){
         System.out.println("Department Head : Confirming Request");
-        mediator.deptConfirm();
+        mediator.notify(this,"deptConfirm");
 
     }
 }

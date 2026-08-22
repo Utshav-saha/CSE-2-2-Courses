@@ -5,10 +5,6 @@ public interface Mediator {
     void registerDsw(Dsw dsw);
     void registerStudent(Student student);
 
-    void deptConfirm();
-    void issueOrder();
-    void issueTestimonial();
-    void issueCertificate();
-    void display();
+    void notify(Component sender, String event);
 
 }

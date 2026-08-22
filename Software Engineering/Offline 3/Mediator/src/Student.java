@@ -11,6 +11,6 @@ public class Student extends Component{
     }
 
     public void getStatus(){
-        mediator.display();
+        mediator.notify(this,"getStatus");
     }
 }

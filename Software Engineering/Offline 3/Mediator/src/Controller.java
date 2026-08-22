@@ -6,11 +6,11 @@ public class Controller extends Component{
 
     public void issueOrder(){
         System.out.println("Controller : Issuing the office order for final result publication");
-        mediator.issueOrder();
+        mediator.notify(this,"issueOrder");
     }
 
     public void issueCertificate(){
         System.out.println("Issuing certificate and academic transcript.");
-        mediator.issueCertificate();
+        mediator.notify(this,"issueCertificate");
     }
 }
