@@ -7,6 +7,7 @@ public class Authority {
 
     Map<Categories, List<Observer>> citizens = new HashMap<>();
 
+
     public Authority() {
         for (Categories operation : Categories.values()) {
             this.citizens.put(operation, new ArrayList<>());
@@ -16,7 +17,9 @@ public class Authority {
     public void subscribe(Categories eventType, Observer citizen) {
 
         List<Observer> users = citizens.get(eventType);
-        users.add(citizen);
+        if (!users.contains(citizen)) {
+            users.add(citizen);
+        }
     }
 
     public void unsubscribe(Categories eventType, Observer citizen) {

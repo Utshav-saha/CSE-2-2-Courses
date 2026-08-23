@@ -9,16 +9,20 @@ public class Main {
         Citizen c2 = new Citizen("Swayam");
         Citizen c3 = new Citizen("smaf");
 
-        system.authority.subscribe(Categories.Earthquake, c1);
-        system.authority.subscribe(Categories.Flood, c1);
-        system.authority.subscribe(Categories.Fire, c1);
+        system.register(c1);
+        system.register(c2);
+        system.register(c3);
 
-        system.authority.subscribe(Categories.Flood, c2);
-        system.authority.subscribe(Categories.Earthquake, c2);
+        system.subscribe(Categories.Earthquake, c1);
+        system.subscribe(Categories.Flood, c1);
+        system.subscribe(Categories.Fire, c1);
 
-        system.authority.subscribe(Categories.Earthquake, c3);
-        system.authority.subscribe(Categories.Flood, c3);
-        system.authority.subscribe(Categories.Fire, c3);
+        system.subscribe(Categories.Flood, c2);
+        system.subscribe(Categories.Earthquake, c2);
+
+        system.subscribe(Categories.Earthquake, c3);
+        system.subscribe(Categories.Flood, c3);
+        system.subscribe(Categories.Fire, c3);
 
 
         Alert a1 = new Alert(
@@ -46,8 +50,8 @@ public class Main {
         c2.showNotifications();
         c3.showNotifications();
 
-        system.authority.subscribe(Categories.Fire, c2);
-        system.authority.unsubscribe(Categories.Fire, c3);
+        system.subscribe(Categories.Fire, c2);
+        system.unsubscribe(Categories.Fire, c3);
 
         system.createAlert(a4);
 
