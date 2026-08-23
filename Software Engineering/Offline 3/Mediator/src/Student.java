@@ -1,9 +1,11 @@
 public class Student extends Component{
 
     String name;
-    public Student(Mediator mediator, String name) {
+    String id;
+    public Student(Mediator mediator, String name, String id) {
         super(mediator);
         this.name = name;
+        this.id = id;
     }
 
     public void update(String msg){
@@ -11,6 +13,10 @@ public class Student extends Component{
     }
 
     public void getStatus(){
-        mediator.notify(this,"getStatus");
+        mediator.notify(this,"getStatus",id);
+    }
+
+    public String getId(){
+        return id;
     }
 }

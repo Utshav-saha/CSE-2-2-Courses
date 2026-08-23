@@ -4,9 +4,9 @@ public class Dsw extends Component{
         super(mediator);
     }
 
-    public void issueTestimonial(){
+    public void issueTestimonial(String id){
         System.out.println("DSW: Issuing testimonial");
-        mediator.notify(this,"issueTestimonial");
+        mediator.notify(this,"issueTestimonial", id);
     }
 
 }
