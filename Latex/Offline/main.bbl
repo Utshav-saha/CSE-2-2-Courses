@@ -1,0 +1,21 @@
+\begin{thebibliography}{2}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Mirarab et~al.(2014)Mirarab, Reaz, Bayzid, Zimmermann, Swenson, and Warnow]{10.1093/bioinformatics/btu462}
+S.~Mirarab, R.~Reaz, Md.~S. Bayzid, T.~Zimmermann, M.~S. Swenson, and T.~Warnow.
+\newblock Astral: genome-scale coalescent-based species tree estimation.
+\newblock \emph{Bioinformatics}, 30\penalty0 (17):\penalty0 i541--i548, 09 2014.
+\newblock ISSN 1367-4803.
+\newblock \doi{10.1093/bioinformatics/btu462}.
+\newblock URL \url{https://doi.org/10.1093/bioinformatics/btu462}.
+
+\bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser, and Polosukhin]{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock \emph{Advances in neural information processing systems}, 30, 2017.
+
+\end{thebibliography}
