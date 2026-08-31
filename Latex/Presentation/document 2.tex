@@ -1,10 +1,11 @@
-\documentclass[aspectratio=169,8pt]{beamer}
+\documentclass[aspectratio=169,10pt]{beamer}
 
-% metroplis theme
+% Set metropolis theme with counter numbering
 \usetheme[numbering=counter,progressbar=none]{metropolis}
 
+% Match the exact font from the screenshots (Fira Sans)
 \usefonttheme{default} 
-\usepackage[sfdefault,book,medium]{FiraSans}
+\usepackage[sfdefault]{FiraSans}
 \usepackage{FiraMono}
 
 \usepackage{tikz}
@@ -14,18 +15,19 @@
 \usepackage{xcolor}
 \usepackage{pgfpages}
 
+% Required for the exact bordered info boxes shown in the screenshots
 \usepackage[many]{tcolorbox} 
 
 \setbeameroption{hide notes}
 
-% Color Palette
-\definecolor{mDarkTeal}{HTML}{03383b}  % Header bg, Title text, Blue box border
+% ---------- Exact Color Palette Extracted from Images ----------
+\definecolor{mDarkTeal}{HTML}{23373B}  % Header bg, Title text, Blue box border
 \definecolor{mLightGray}{HTML}{FAFAFA} % Main slide background
 \definecolor{tealBorder}{HTML}{6A9A9D} % Teal box border
 \definecolor{tealBg}{HTML}{F2F6F6}     % Teal box body background
 \definecolor{blueBg}{HTML}{EBECEE}     % Blue box body background
-\definecolor{mText}{HTML}{041f25}      % Default text color
-\definecolor{mRed}{HTML}{f97171}       
+\definecolor{mText}{HTML}{23373B}      % Default text color
+\definecolor{mRed}{HTML}{B0443A}       % Accent red
 
 \setbeamercolor{normal text}{fg=mText,bg=mLightGray}
 \setbeamercolor{frametitle}{fg=white,bg=mDarkTeal}
@@ -34,10 +36,12 @@
 \setbeamercolor{itemize subitem}{fg=mDarkTeal}
 \setbeamercolor{alerted text}{fg=mRed}
 
+% Force round bullets to match the screenshot
 \setbeamertemplate{itemize item}{\textbullet}
 \setbeamertemplate{itemize subitem}{$\circ$}
 
-\setbeamerfont{frametitle}{size=\large,series=\normalfont} 
+% Font weight adjustments to match the sleek look of the screenshots
+\setbeamerfont{frametitle}{size=\Large,series=\normalfont} 
 \setbeamerfont{title}{size=\LARGE,series=\normalfont}
 \setbeamerfont{subtitle}{size=\large,series=\normalfont}
 \setbeamerfont{author}{size=\normalsize}
@@ -47,12 +51,11 @@
   colback=tealBg,
   colframe=tealBorder,
   coltitle=white,
-  title={#1},
+  title={\textbf{#1}},
   arc=3pt,
   boxrule=1.5pt,
   left=6pt, right=6pt, top=4pt, bottom=4pt,
   fonttitle=\normalsize,
-  fontupper=\small,
   boxsep=2pt
 }
 
@@ -60,20 +63,19 @@
   colback=blueBg,
   colframe=mDarkTeal,
   coltitle=white,
-  title={#1},
+  title={\textbf{#1}},
   arc=3pt,
   boxrule=1.5pt,
   left=6pt, right=6pt, top=4pt, bottom=4pt,
   fonttitle=\normalsize,
-  fontupper=\small,
   boxsep=2pt
 }
 
-% TikZ styles
+% ---------- Reusable TikZ styles (adapted to new colors) ----------
 \tikzset{
   arr/.style={-{Latex[length=2.2mm]}, thick, mDarkTeal!75},
   bigarr/.style={-{Latex[length=3mm]}, very thick, mDarkTeal!80},
-  gpu/.style={font=\normalsize\bfseries, text=mDarkTeal},
+  gpu/.style={font=\footnotesize\bfseries, text=mDarkTeal},
   shard/.style={draw=#1!80!black, fill=#1!13, rounded corners=2pt, thick,
     minimum width=0.80cm, minimum height=0.45cm, font=\scriptsize,
     text=#1!60!black, align=center},
@@ -117,14 +119,14 @@
   \only<2->{
     \draw[bigarr] (0,1.55) -- (0,0.92);
     \node[font=\normalsize\bfseries] at (0,0.65) {Break it into shards};
-    \foreach \x/\c/\s in {-1.5/red/$S_0$,-0.5/green/$S_1$,0.5/blue/$S_2$,1.5/orange/$S_3$}{
+    \foreach \x/\c/\s in {-1.5/mDarkTeal/$S_0$,-0.5/tealBorder/$S_1$,0.5/orange/$S_2$,1.5/violet/$S_3$}{
       \node[shard=\c, minimum width=0.84cm,minimum height=0.52cm] at (\x,-0.15) {\s};
     }
   }
   \only<3->{
     \foreach \x/\g in {-1.5/GPU 0,-0.5/GPU 1,0.5/GPU 2,1.5/GPU 3}{
       \draw[arr] (\x,-0.48) -- (\x,-0.90);
-      \node[gpu,font=\footnotesize\bfseries] at (\x,-1.18) {\g};
+      \node[gpu,font=\scriptsize\bfseries] at (\x,-1.18) {\g};
     }
   }
 \end{tikzpicture}
@@ -141,7 +143,7 @@ In games, shards are small pieces that together complete one item. FSDP uses the
   \item<4-> Reconstruct a full piece of the model only when computation needs it.
 \end{itemize}
 \end{columns}
-\vspace{1.5 cm}
+\vspace{0.08cm}
 \only<4->{\takeaway{FSDP starts by \textbf{splitting} model state instead of \textbf{replicating} it.}}
 \end{frame}
 
@@ -149,36 +151,28 @@ In games, shards are small pieces that together complete one item. FSDP uses the
 \begin{frame}[t]{12. What exactly is sharded?}
 \transfade[duration=0.2]
 \begin{columns}[T,onlytextwidth]
-\column{0.5\textwidth}
-\vspace{0.15cm}
-\begin{center}
-  \begin{tikzpicture}[x=1cm,y=1cm]
+\column{0.48\textwidth}
+\begin{tikzpicture}[x=1cm,y=1cm]
   \node[font=\bfseries\large] at (0,2.8) {DDP: replicated};
-  \foreach \i/\y/\c in {0/2.18/red,1/1.56/green,2/0.94/blue,3/0.32/orange}{
+  \foreach \i/\y in {0/2.18,1/1.56,2/0.94,3/0.32}{
     \node[gpu,font=\scriptsize\bfseries] at (-1.95,\y) {GPU \i};
-    \draw[rounded corners=4pt,draw=\c!70!black,fill=\c!10,thick] (-1.22,\y-0.20) rectangle (2.00,\y+0.20);
+    \draw[rounded corners=4pt,draw=mRed!70!black,fill=mRed!10,thick] (-1.22,\y-0.20) rectangle (2.00,\y+0.20);
     \node[font=\scriptsize\bfseries] at (0.40,\y) {P + G + O};
   }
   \node[font=\scriptsize,text=gray,align=center] at (0,-0.28) {Every GPU keeps a full copy.};
 \end{tikzpicture}
-\end{center}
 
-
-\column{0.5\textwidth}
-\vspace{0.15cm}
-\begin{center}
-  \begin{tikzpicture}[x=1cm,y=1cm]
+\column{0.48\textwidth}
+\begin{tikzpicture}[x=1cm,y=1cm]
   \node[font=\bfseries\large] at (0,2.8) {FSDP: sharded};
   \only<2->{
-  \foreach \i/\y/\c/\s in {0/2.18/red/Shard 0,1/1.56/green/Shard 1,2/0.94/blue/Shard 2,3/0.32/orange/Shard 3}{
+  \foreach \i/\y/\c/\s in {0/2.18/mDarkTeal/Shard 0,1/1.56/tealBorder/Shard 1,2/0.94/orange/Shard 2,3/0.32/violet/Shard 3}{
     \node[gpu,font=\scriptsize\bfseries] at (-1.95,\y) {GPU \i};
     \node[shard=\c, minimum width=2.1cm] at (-0.10,\y) {\s};
   }
   \node[font=\scriptsize,text=gray,align=center] at (0,-0.28) {Each GPU keeps only its fraction.};
   }
 \end{tikzpicture}
-\end{center}
-
 \end{columns}
 \vspace{0.08cm}
 \only<3->{
@@ -235,34 +229,75 @@ Sharding saves memory, but the current layer normally needs its full parameter t
 % ================================================================
 \begin{frame}[t]{14. All-Gather: temporarily rebuild the current FSDP unit}
 \transfade[duration=0.2]
+% --- geometry grid ---------------------------------------------------------
+% half-width 6.80 matches the takeaway box below (13.4cm text + 2x3.5pt inner sep)
+% 4 cards of 2.80 + 3 gaps of 0.80 = 13.60  ->  centres at +-5.40, +-1.80
 \begin{center}
-\begin{tikzpicture}[x=1cm,y=1cm]
-  \node[font=\normalsize\bfseries] at (0,2.75) {Before: each GPU owns one shard};
-  \foreach \x/\gpu/\c/\s in {-4.6/GPU 0/mDarkTeal/$W_0$,-1.55/GPU 1/tealBorder/$W_1$,1.55/GPU 2/orange/$W_2$,4.6/GPU 3/violet/$W_3$}{
-    \node[gpu] at (\x,2.18) {\gpu};
-    \node[shard=\c,minimum width=0.9cm,minimum height=0.52cm] at (\x,1.62) {\s};
+\begin{tikzpicture}[x=1cm,y=1cm,
+    rank/.style={draw=mDarkTeal!28, fill=blueBg!55, rounded corners=4pt},
+    ranklab/.style={font=\scriptsize\bfseries, text=mDarkTeal},
+    note/.style={font=\tiny, text=mDarkTeal!55},
+    capt/.style={font=\footnotesize, text=mDarkTeal, align=center},
+    flow/.style={-{Latex[length=2.1mm,width=1.7mm]}, semithick},
+    bandtag/.style={font=\scriptsize\itshape, text=orange!45!black}]
+
+  % constant bounding box: keeps the figure from shifting as overlays reveal rows
+  \path (-6.80,-1.26) rectangle (6.80,3.76);
+
+  % ---------- (a) caption ----------
+  \node[capt] at (0,3.42)
+    {\textbf{(a) Before.}~Each rank persists one disjoint shard $W_i$ of this unit's parameter tensor.};
+
+  % ---------- top row: sharded state  (card 1.95 .. 3.00) ----------
+  \foreach \i/\x/\c/\s in {0/-5.40/mDarkTeal/$W_0$,1/-1.80/tealBorder/$W_1$,2/1.80/orange/$W_2$,3/5.40/violet/$W_3$}{
+    \draw[rank] (\x-1.40,1.95) rectangle (\x+1.40,3.00);
+    \node[ranklab] at (\x,2.84) {GPU \i};
+    \node[shard=\c,minimum width=1.00cm,minimum height=0.44cm] at (\x,2.46) {\s};
+    \node[note] at (\x,2.08) {persistent: $|W|/N$};
   }
+
+  % ---------- collective layer  (band 0.95 .. 1.55) ----------
   \only<2->{
-    \node[stage=orange,minimum width=3.15cm] (ag) at (0,0.72) {ALL-GATHER};
-    \foreach \x in {-4.6,-1.55,1.55,4.6}{\draw[arr] (\x,1.30) -- (ag.north);}
-  }
-  \only<3->{
-    \node[font=\normalsize\bfseries] at (0,-0.05) {After: full parameter for the current unit is available on every GPU};
-    \foreach \x/\gpu in {-4.6/GPU 0,-1.55/GPU 1,1.55/GPU 2,4.6/GPU 3}{
-      \node[gpu,font=\scriptsize\bfseries] at (\x,-0.65) {\gpu};
-      \foreach \dx/\c in {-0.42/mDarkTeal,-0.14/tealBorder,0.14/orange,0.42/violet}{
-        \draw[rounded corners=1pt,draw=\c!80!black,fill=\c!14,thick] (\x+\dx-0.12,-1.28) rectangle (\x+\dx+0.12,-0.92);
-      }
-      \node[font=\scriptsize,text=gray] at (\x,-1.55) {$W_0W_1W_2W_3$};
+    % one shard leaves each rank: arrow tinted by the owning rank
+    \foreach \x/\c in {-5.40/mDarkTeal,-1.80/tealBorder,1.80/orange,5.40/violet}{
+      \draw[flow,draw=\c!75!black] (\x,1.90) -- (\x,1.60);
     }
+    \draw[rounded corners=5pt, draw=orange!75!black, fill=orange!9, thick]
+      (-6.80,0.95) rectangle (6.80,1.55);
+    \node[font=\normalsize\bfseries, text=orange!40!black] at (0,1.25) {ALL-GATHER};
+    \node[bandtag,anchor=west] at (-6.60,1.25) {process group: $N=4$};
+    \node[bandtag,anchor=east] at (6.60,1.25) {$\approx\tfrac{N-1}{N}|W|$ received per rank};
+  }
+
+  % ---------- bottom row: materialized parameter  (card -0.50 .. 0.55) ----------
+  \only<3->{
+    % every rank receives the same full tensor: arrows share one colour
+    \foreach \x in {-5.40,-1.80,1.80,5.40}{\draw[flow,draw=orange!70!black] (\x,0.90) -- (\x,0.60);}
+    \foreach \i/\x in {0/-5.40,1/-1.80,2/1.80,3/5.40}{
+      \draw[rank] (\x-1.40,-0.50) rectangle (\x+1.40,0.55);
+      \node[ranklab] at (\x,0.39) {GPU \i};
+      % full tensor: 4 tiles of 0.50 + 3 gaps of 0.03 = 2.09 wide (vs. 1.00 shard above)
+      \foreach \j/\dx/\c in {0/-0.795/mDarkTeal,1/-0.265/tealBorder,2/0.265/orange,3/0.795/violet}{
+        \ifnum\i=\j\relax
+          \draw[rounded corners=2pt,draw=\c!80!black,fill=\c!22,thick]
+            (\x+\dx-0.25,-0.21) rectangle (\x+\dx+0.25,0.23);
+        \else
+          \draw[rounded corners=2pt,draw=\c!50!black,fill=\c!6,thin,densely dashed]
+            (\x+\dx-0.25,-0.21) rectangle (\x+\dx+0.25,0.23);
+        \fi
+      }
+      \node[note] at (\x,-0.37) {transient: $|W|$};
+    }
+    \node[capt] at (0,-0.92)
+      {\textbf{(b) After.}~Every rank materializes $W=[\,W_0\,\|\,W_1\,\|\,W_2\,\|\,W_3\,]$; solid $=$ owned shard, dashed $=$ gathered.};
   }
 \end{tikzpicture}
 \end{center}
 \vspace{0.03cm}
-\only<4->{\takeaway{All-Gather: \textbf{shards $\rightarrow$ full parameters}, but only for the unit currently being computed.}}
+% \visible (not \only) reserves the box on every overlay, so the figure above
+% does not shift upward when the takeaway appears.
+\visible<4->{\takeaway{All-Gather: \textbf{shards $\rightarrow$ full parameters}, but only for the unit currently being computed.}}
 \end{frame}
-
-% ================================================================
 \begin{frame}[t]{15. Forward pass: gather, compute, reshard}
 \transfade[duration=0.2]
 \vspace{0.25cm}
@@ -356,37 +391,75 @@ Each GPU processed different mini-batch data, so their gradient contributions mu
 % ================================================================
 \begin{frame}[t]{18. Reduce-Scatter: combine gradients, then split again}
 \transfade[duration=0.2]
-\begin{columns}[T,onlytextwidth]
-\column{0.49\textwidth}
-\vspace{0.08cm}
-\begin{tikzpicture}[x=1cm,y=1cm]
-  \node[font=\normalsize\bfseries] at (0,2.7) {1. Gradient contributions};
-  \foreach \x/\gpu/\c in {-1.8/GPU 0/mDarkTeal,-0.6/GPU 1/tealBorder,0.6/GPU 2/orange,1.8/GPU 3/violet}{
-    \node[gpu,font=\scriptsize\bfseries] at (\x,2.08) {\gpu};
-    \node[shard=\c] at (\x,1.60) {$g$};
-  }
-  \only<2->{\node[stage=tealBorder,minimum width=3.4cm] (reduce) at (0,0.65) {REDUCE: combine};
-    \foreach \x in {-1.8,-0.6,0.6,1.8}{\draw[arr] (\x,1.30) -- (reduce.north);}}
-  \only<3->{\node[stage=violet,minimum width=3.4cm] (scatter) at (0,-0.45) {SCATTER: redistribute}; \draw[arr] (reduce) -- (scatter);}
-\end{tikzpicture}
+% --- geometry grid ---------------------------------------------------------
+% half-width 6.823 = the takeaway box (13.4cm text + 2x3.5pt inner sep) / 2.
+% Two panels of 6.523 with a 0.60 gutter: panel centres at -3.5615 and +3.5615.
+% Inside a panel: 4 cards of 1.3458 + 3 gaps of 0.38 = 6.523.
+% \makebox (not center) centres without adding vertical glue.
+\noindent\makebox[\textwidth]{%
+\begin{tikzpicture}[x=1cm,y=1cm,
+    rank/.style={draw=mDarkTeal!28, fill=blueBg!55, rounded corners=4pt},
+    ranklab/.style={font=\scriptsize\bfseries, text=mDarkTeal},
+    note/.style={font=\footnotesize, text=mDarkTeal!55, align=center},
+    head/.style={font=\normalsize\bfseries, text=mDarkTeal},
+    flow/.style={-{Latex[length=2.1mm,width=1.7mm]}, semithick}]
 
-\column{0.48\textwidth}
-\vspace{0.08cm}
-\only<3->{
-\begin{tikzpicture}[x=1cm,y=1cm]
-  \node[font=\normalsize\bfseries] at (0,2.7) {2. Final synchronized shards};
-  \foreach \x/\gpu/\c/\s in {-1.8/GPU 0/mDarkTeal/$G_0$,-0.6/GPU 1/tealBorder/$G_1$,0.6/GPU 2/orange/$G_2$,1.8/GPU 3/violet/$G_3$}{
-    \node[gpu,font=\scriptsize\bfseries] at (\x,2.05) {\gpu};
-    \node[shard=\c] at (\x,1.55) {\s};
+  % constant bounding box (padded past every node) so the figure never shifts
+  % as overlays reveal rows; padding is symmetric, so centring is unaffected.
+  \path (-6.95,-0.08) rectangle (6.95,3.30);
+
+  % ================= panel 1: contributions -> reduce -> scatter =============
+  \node[head] at (-3.5615,2.94) {1. Gradient contributions};
+  \foreach \i/\x/\c in {0/-6.1501/mDarkTeal,1/-4.4244/tealBorder,2/-2.6986/orange,3/-0.9729/violet}{
+    \draw[rank] (\x-0.6729,1.74) rectangle (\x+0.6729,2.60);
+    \node[ranklab] at (\x,2.42) {GPU \i};
+    \node[shard=\c,minimum width=0.90cm,minimum height=0.44cm] at (\x,2.03) {$g$};
   }
-  \node[font=\footnotesize,text=gray,align=center] at (0,0.78) {Correct global gradient,\\but each GPU stores only its shard.};
+
+  \only<2->{
+    % each rank pushes its own contribution: arrow tinted by the owning rank
+    \foreach \x/\c in {-6.1501/mDarkTeal,-4.4244/tealBorder,-2.6986/orange,-0.9729/violet}{
+      \draw[flow,draw=\c!75!black] (\x,1.69) -- (\x,1.39);
+    }
+    \draw[rounded corners=5pt, draw=tealBorder!75!black, fill=tealBorder!9, thick]
+      (-6.823,0.86) rectangle (-0.300,1.34);
+    \node[font=\normalsize\bfseries, text=tealBorder!45!black] at (-3.5615,1.10) {REDUCE: combine};
+  }
+
+  \only<3->{
+    % one combined gradient leaves the reduction
+    \draw[flow,draw=tealBorder!70!black] (-3.5615,0.81) -- (-3.5615,0.51);
+    \draw[rounded corners=5pt, draw=violet!75!black, fill=violet!8, thick]
+      (-6.823,-0.02) rectangle (-0.300,0.46);
+    \node[font=\normalsize\bfseries, text=violet!45!black] at (-3.5615,0.22) {SCATTER: redistribute};
+  }
+
+  % ================= panel 2: final synchronized shards ======================
+  \only<3->{
+    \node[head] at (3.5615,2.94) {2. Final synchronized shards};
+    \foreach \i/\x/\c/\s in {0/0.9729/mDarkTeal/$G_0$,1/2.6986/tealBorder/$G_1$,2/4.4244/orange/$G_2$,3/6.1501/violet/$G_3$}{
+      \draw[rank] (\x-0.6729,1.74) rectangle (\x+0.6729,2.60);
+      \node[ranklab] at (\x,2.42) {GPU \i};
+      \node[shard=\c,minimum width=0.90cm,minimum height=0.44cm] at (\x,2.03) {\s};
+    }
+    % note top aligns with the REDUCE band top
+    \node[note,anchor=north] at (3.5615,1.38) {Correct global gradient,\\but each GPU stores only its shard.};
+  }
 \end{tikzpicture}}
-\only<4->{\begin{tealbox}{Compare with DDP}
+
+\vspace{0.06cm}
+% minipage pins the box to the same 13.646cm width as the figure and takeaway
+\noindent\makebox[\textwidth]{\begin{minipage}{13.646cm}
+\visible<4->{\begin{tealbox}{Compare with DDP}
 DDP typically uses \textbf{All-Reduce}: every rank ends with the full synchronized gradient. FSDP uses \textbf{Reduce-Scatter}: each rank ends with only its shard.
 \end{tealbox}}
-\end{columns}
-\vspace{0.02cm}
-\only<5->{\takeaway{Reduce-Scatter = \textbf{combine} gradient contributions, then \textbf{redistribute} only the owned shard.}}
+\end{minipage}}
+
+% negative skip cancels the \begin{center} glue inside \takeaway, so the gap
+% below the tealbox matches the 0.10cm gap above it
+\vspace{-0.07cm}
+% \visible (not \only) reserves the box on every overlay, so nothing shifts
+\visible<5->{\takeaway{Reduce-Scatter = \textbf{combine} gradient contributions, then \textbf{redistribute} only the owned shard.}}
 \end{frame}
 
 % ================================================================
@@ -416,12 +489,21 @@ DDP typically uses \textbf{All-Reduce}: every rank ends with the full synchroniz
 \end{frame}
 
 % ================================================================
-\begin{frame}[t,shrink=2]{20. Final trade-off: memory down, communication up}
+\begin{frame}[t]{20. Final trade-off: memory down, communication up}
 \transfade[duration=0.2]
-\begin{columns}[T,onlytextwidth]
-\column{0.51\textwidth}
-\vspace{0.05cm}
-\begin{tabular}{@{}lll@{}}
+% --- geometry grid ---------------------------------------------------------
+% Total 13.646cm = the takeaway box width (13.4cm text + 2x3.5pt inner sep),
+% so the table, both coloured boxes and the takeaway share one left and one
+% right edge:  left 7.70 + gutter 0.60 + right 5.346 = 13.646.
+% The table measures 7.604cm x 3.373cm.  tabular* stretches it to exactly the
+% column width so it is flush with the bluebox; the right-hand figure is given
+% a bounding box of exactly the table's height, so the two coloured boxes
+% start level.  \vspace{0pt} aligns both minipages by their tops, and
+% \parskip=0 replaces beamer's paragraph glue with the explicit gaps below.
+\setlength{\parskip}{0pt}
+\noindent\makebox[\linewidth]{%
+\begin{minipage}[t]{7.70cm}\vspace{0pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lll@{}}
 \toprule
  & \textbf{DDP} & \textbf{FSDP} \\
 \midrule
@@ -431,29 +513,35 @@ Parameters & Already local & All-Gather \\
 Gradient sync & All-Reduce & Reduce-Scatter \\
 Main pressure & Memory & Communication \\
 \bottomrule
-\end{tabular}
-\vspace{0.22cm}
-\only<2->{\begin{bluebox}{The trade}
+\end{tabular*}
+\par\vspace{0.18cm}
+\visible<2->{\begin{bluebox}{The trade}
 FSDP spends more network communication to reduce persistent GPU memory and make larger models trainable.
 \end{bluebox}}
-
-\column{0.46\textwidth}
-\vspace{0.05cm}
-\only<3->{
+\end{minipage}%
+\hspace{0.60cm}%
+\begin{minipage}[t]{5.346cm}\vspace{0pt}
+\visible<3->{%
 \begin{tikzpicture}[x=1cm,y=1cm]
-  \node[font=\bfseries\large] at (0,2.45) {Overlap hides some cost};
-  \draw[rounded corners=4pt,fill=tealBg,draw=tealBorder,thick] (-2.0,1.55) rectangle (2.0,2.00);
-  \node[font=\footnotesize\bfseries] at (0,1.775) {Compute block $i$};
-  \draw[rounded corners=4pt,fill=blueBg,draw=orange!80!black,thick] (-0.55,0.93) rectangle (2.0,1.38);
-  \node[font=\footnotesize\bfseries] at (0.72,1.155) {Gather block $i+1$};
-  \node[font=\scriptsize,text=gray,align=center] at (0,0.28) {Communication for the next unit can\\overlap with current computation.};
+  % bounding box height 3.373cm = table height, so the tealbox below starts
+  % level with the bluebox; bars span the full column width, flush with the
+  % heading, the tealbox and the takeaway
+  \path (-2.673,0) rectangle (2.673,3.373);
+  \node[font=\bfseries\large,text=mDarkTeal] at (0,3.09) {Overlap hides some cost};
+  \draw[rounded corners=4pt,fill=tealBg,draw=tealBorder,thick] (-2.673,2.14) rectangle (2.673,2.62);
+  \node[font=\footnotesize\bfseries] at (0,2.38) {Compute block $i$};
+  \draw[rounded corners=4pt,fill=blueBg,draw=orange!80!black,thick] (-0.735,1.40) rectangle (2.673,1.88);
+  \node[font=\footnotesize\bfseries] at (0.969,1.64) {Gather block $i+1$};
+  \node[font=\scriptsize,text=mDarkTeal!55,align=center] at (0,0.85) {Communication for the next unit can\\overlap with current computation.};
 \end{tikzpicture}}
-\only<4->{\begin{tealbox}{One-sentence summary}
+\par\vspace{0.18cm}
+\visible<4->{\begin{tealbox}{One-sentence summary}
 \textbf{Shard most of the time; gather only when needed.}
 \end{tealbox}}
-\end{columns}
-\vspace{0.02cm}
-\only<5->{\takeaway{FSDP enables larger-model training by trading \textbf{memory} for \textbf{communication}.}}
+\end{minipage}}
+\par\vspace{0.22cm}
+% the take node directly (not \takeaway) so no \begin{center} glue is added
+\noindent\makebox[\linewidth]{\visible<5->{\begin{tikzpicture}\node[take]{FSDP enables larger-model training by trading \textbf{memory} for \textbf{communication}.};\end{tikzpicture}}}
 \end{frame}
 
 \end{document}
