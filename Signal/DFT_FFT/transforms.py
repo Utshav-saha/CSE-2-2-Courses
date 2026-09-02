@@ -20,6 +20,7 @@ A quick self-test you should run before touching either application:
 """
 
 import numpy as np
+import math
 
 
 def next_power_of_two(n):
@@ -138,10 +139,65 @@ class FFTTransformer(DFTAnalyzer):
 
     name = "fft"
 
+    def reverse_bit(self,k, num):
+        reversed = 0
+        pos = num-1
+
+        while k > 0:
+            bit = k&1
+            reversed |= bit << pos
+
+            pos -= 1
+            k >>= 1
+
+        return reversed
+
+    def bit_reversal_array(self,x):
+
+        N = len(x)
+        num = (N-1).bit_length()
+
+        for k in range(N):
+            reversed = self.reverse_bit(k,num)
+
+            if k < reversed:
+                x[k], x[reversed] = x[reversed], x[k]
+
+        return x
+
     def transform(self, x):
         """Forward FFT. Same contract as DFTAnalyzer.transform."""
-        # TODO: implement this method
-        raise NotImplementedError("Implement FFTTransformer.transform")
+        N = len(x)
+        next_pow = next_power_of_two(N)
+        if N != next_pow:
+            raise ValueError(f"FFTTransformer needs power of two length")
+
+        
+        reversed_x = self.bit_reversal_array(x)
+        x_copy = np.array(x, dtype=np.complex128)
+
+        bound = (N - 1).bit_length()
+
+        for s in range(1, bound+1):
+            M = 2 ** s
+            middle = M // 2
+
+            twiddle = np.exp(-2j * np.pi / M)
+            W_M = twiddle ** np.arange(middle)
+
+            
+            for l in range (0, N-M+1, M):
+                for k in range (0, M//2 ):
+
+                    g = reversed_x[l+k]
+                    h = W_M[k] * reversed_x[l+k+M//2]
+
+                    reversed_x[l+k] = g+h
+                    reversed_x[l+k+M//2] = g-h
+                    
+        
+
+        return reversed_x
 
     def inverse(self, spectrum):
         """Inverse FFT, including the 1/N factor."""
