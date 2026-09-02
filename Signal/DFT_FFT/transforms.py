@@ -172,9 +172,8 @@ class FFTTransformer(DFTAnalyzer):
         if N != next_pow:
             raise ValueError(f"FFTTransformer needs power of two length")
 
-        
-        reversed_x = self.bit_reversal_array(x)
         x_copy = np.array(x, dtype=np.complex128)
+        reversed_x = self.bit_reversal_array(x_copy)
 
         bound = (N - 1).bit_length()
 
@@ -187,13 +186,13 @@ class FFTTransformer(DFTAnalyzer):
 
             
             for l in range (0, N-M+1, M):
-                for k in range (0, M//2 ):
+                for k in range (0, middle ):
 
                     g = reversed_x[l+k]
-                    h = W_M[k] * reversed_x[l+k+M//2]
+                    h = W_M[k] * reversed_x[l+k+middle]
 
                     reversed_x[l+k] = g+h
-                    reversed_x[l+k+M//2] = g-h
+                    reversed_x[l+k+middle] = g-h
                     
         
 
@@ -201,8 +200,12 @@ class FFTTransformer(DFTAnalyzer):
 
     def inverse(self, spectrum):
         """Inverse FFT, including the 1/N factor."""
-        # TODO: implement this method
-        raise NotImplementedError("Implement FFTTransformer.inverse")
+        N = len(spectrum)
+
+        conjugated_spectrum = np.conjugate(spectrum)
+        x_n = self.transform(conjugated_spectrum)
+        x_n = np.conjugate(x_n)/ N
+        return x_n
 
 
 # ---------------------------------------------------------------------------
