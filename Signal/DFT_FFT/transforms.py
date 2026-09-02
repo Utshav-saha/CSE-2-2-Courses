@@ -29,7 +29,17 @@ def next_power_of_two(n):
     Both tasks need this to choose a transform length for the radix-2 FFT.
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement next_power_of_two")
+    if n <=1:
+        return 1
+
+    n-= 1 # nahole n= 2 er power hole 1 ghor beshi shift hobe
+    pos = 0
+    while n > 0:
+        n >>= 1
+        pos += 1
+
+    return 1 << pos
+
 
 
 class DFTAnalyzer:
@@ -59,7 +69,14 @@ class DFTAnalyzer:
         numpy.ndarray of complex128, shape (N,)
         """
         # TODO: implement this method
-        raise NotImplementedError("Implement DFTAnalyzer.transform")
+        N = len(x)
+        X_k = np.zeros(N, dtype=np.complex128)
+
+        for k in range(N):
+            for n in range(N):
+                X_k[k] += x[n] * np.exp(-2j * np.pi*k*n/N)
+
+        return X_k
 
     def inverse(self, spectrum):
         """
@@ -76,7 +93,29 @@ class DFTAnalyzer:
             it is safe to take .real.
         """
         # TODO: implement this method
-        raise NotImplementedError("Implement DFTAnalyzer.inverse")
+        N= len(spectrum)
+        x_n = np.zeros(N, dtype=np.complex128)
+
+        # for n in range(N):
+        #     for k in range(N):
+        #         x_n += spectrum[k] * np.exp(2j * np.pi * k * n /N)
+
+        #     x_n *= (1/N)
+
+        # return x_n 
+
+        twiddle = np.exp(2j * np.pi / N)
+        factors = twiddle** np.arange(N)
+
+        for n in range(N):
+            for k in range(N):
+                x_n[n] += spectrum[k] * factors[(k*n)%N]  
+
+            
+        return x_n / N
+
+
+        
 
 
 class FFTTransformer(DFTAnalyzer):
