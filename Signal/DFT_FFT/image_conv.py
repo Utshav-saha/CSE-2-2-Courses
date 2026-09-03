@@ -28,7 +28,8 @@ from bench_utils import plot_runtime_curve, time_best, timing_table_lines
 from image_utils import (load_image, make_kernel, save_comparison, save_image,
                          save_kernel_preview)
 from io_utils import write_report
-from transforms import DFTAnalyzer, FFTTransformer, next_power_of_two
+from transforms import (ArbitraryLengthFFT, DFTAnalyzer, FFTTransformer,
+                        next_power_of_two)
 
 
 def transform_2d(plane, engine):
@@ -111,7 +112,7 @@ def linear(plane, kernel, engine):
     # result = engine.inverse(transformed)
     # return result.real()
 
-def circular(plane, kernel , engine):
+def circular_spectrum(plane, kernel, engine):
     H, W = plane.shape
     kh, kw = kernel.shape
 
@@ -192,16 +193,16 @@ def convolve_plane(plane, kernel, engine, circular=False):
     # TODO: implement this function
     if not circular:
         transformed, H, W, kh, kw = linear(plane, kernel, engine)
-        result = engine.inverse(transformed, engine)
-        real_part = result.real()
+        result = inverse_2d(transformed, engine)
+        real_part = result.real
 
         cropped = crop(real_part, H , W , kh , kw)
         return cropped
 
     else:
-        transformed, H, W, kh, kw = circular(plane, kernel, engine)
-        result = engine.inverse(transformed, engine)
-        real_part = result.real()
+        transformed, H, W, kh, kw = circular_spectrum(plane, kernel, engine)
+        result = inverse_2d(transformed, engine)
+        real_part = result.real
 
         return real_part
 
@@ -222,9 +223,13 @@ def convolve_image(image, kernel, engine, circular=False):
 
     # color
     elif image.ndim == 3:
-    
-    raise NotImplementedError("Implement convolve_image")
+        result = np.zeros(image.shape, dtype=np.float64)
 
+        for i in range(image.shape[2]):
+            result[:, :, i] = convolve_plane(image[:, :, i], kernel, engine, circular=circular)
+            
+        return result
+    
 
 def getvalue(image,i,j):
 
@@ -292,9 +297,79 @@ def run_single(path, kernel_name, param, engine_name, out_dir, gray=False):
     and report max |spectral - direct|. It should be ~1e-15, and anything above
     1e-9 is a bug, not rounding.
     """
-    # TODO: implement this function
-    raise NotImplementedError("Implement run_single")
+    if kernel_name == "bokeh":
+        kernel = make_kernel("bokeh", radius=param)
+    elif kernel_name == "gaussian":
+        kernel = make_kernel("gaussian", size=param)
+    elif kernel_name == "box":
+        kernel = make_kernel("box", size=param)
+    elif kernel_name == "motion":
+        kernel = make_kernel("motion", length=param, angle=30.0)
+    
 
+    if engine_name == "fft":
+        engine = FFTTransformer()
+    elif engine_name == "dft":
+        engine = DFTAnalyzer()
+    elif engine_name == "arbitrary":
+        engine = ArbitraryLengthFFT()
+    
+
+    image = load_image(path, as_gray=gray)
+
+    blurred = convolve_image(image, kernel, engine)
+    wraparound = convolve_image(image, kernel, engine, circular=True)
+
+    if image.ndim == 2:
+        crop = image[:64, :64]
+    else:
+        crop = image[:64, :64, 0]
+    
+    spectral = convolve_plane(crop, kernel, engine)
+    direct = convolve_plane_direct(crop, kernel)
+    
+    max_error = float(np.max(np.abs(spectral - direct)))
+    if max_error <= 1e-9:
+        verdict= "MATCH"
+
+    else: verdict = "MISMATCH"
+
+    os.makedirs(out_dir, exist_ok=True)
+
+    save_image(blurred,os.path.join(out_dir, "blurred.png"))
+    save_image(wraparound,os.path.join(out_dir, "wraparound.png"))
+    save_kernel_preview(kernel,os.path.join(out_dir, "kernel.png"), title=kernel_name)
+    save_comparison(
+        [image, blurred, wraparound], 
+        ["original", "blurred", "wraparound"], 
+        os.path.join(out_dir, "comparison.png")
+    )
+
+    H, W = image.shape[:2]
+    kh, kw = kernel.shape
+    lin_H, lin_W = H + kh - 1, W + kw - 1
+
+    if engine.name == "fft":
+        transform_height = next_power_of_two(lin_H)
+        transform_width = next_power_of_two(lin_W)
+    else:
+        transform_height, transform_width = lin_H, lin_W
+        
+    colour_mode = "gray" if image.ndim == 2 else "RGB"
+
+    report_lines = [
+        "Task B -- 2D convolution through the frequency domain",
+        f"image : {path}  ({H} x {W}, {colour_mode})",
+        f"kernel : {kernel_name}  ({kh} x {kw})",
+        f"engine: {engine.name}",
+        f"linear-conv size : {lin_H} x {lin_W}",
+        f"transform size: {transform_height} x {transform_width}",
+        f"max |spectral - direct| on 64x64 crop : {max_error:.3e}",
+        f"verification: {verdict}",
+    ]
+    write_report(os.path.join(out_dir, "report.txt"), report_lines)
+    
+    print(verdict)
 
 # ---------------------------------------------------------------------------
 # PROVIDED -- run_benchmark is already written. It calls your convolve_plane
