@@ -50,7 +50,18 @@ def transform_2d(plane, engine):
     numpy.ndarray of complex128, shape (P, Q)
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement transform_2d")
+    rows , cols = plane.shape
+    intermediate = np.zeros((rows, cols), dtype=np.complex128)
+    matrix = np.zeros((rows, cols), dtype=np.complex128)
+    for i , row in enumerate(plane):
+        transformed = engine.transform(row)
+        intermediate[i] = transformed
+
+    for i , col in enumerate(intermediate.T):
+        transformed = engine.transform(col)
+        matrix[:,i] = transformed
+
+    return matrix
 
 
 def inverse_2d(spectrum, engine):
@@ -58,7 +69,37 @@ def inverse_2d(spectrum, engine):
     2D inverse transform, the same way round. Shape is preserved.
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement inverse_2d")
+    rows , cols = spectrum.shape
+    intermediate = np.zeros((rows, cols), dtype=np.complex128)
+    matrix = np.zeros((rows, cols), dtype=np.complex128)
+    for i , row in enumerate(spectrum):
+        transformed = engine.inverse(row)
+        intermediate[i] = transformed
+
+    for i , col in enumerate(intermediate.T):
+        transformed = engine.inverse(col)
+        matrix[:,i] = transformed
+
+    return matrix
+
+
+def linear(plane, kernel, engine):
+    H, W = plane.shape
+    kh, kw = kernel.shape
+
+    req_H = H + kh -1
+    req_W = W + kw -1
+
+    if isinstance(engine, FFTTransformer):
+        req_H = next_power_of_two(req_H)
+        req_W = next_power_of_two(req_W)
+
+    
+    padded_plane = np.zeros((req_H,req_W),dtype=np.complex128)
+    padded_plane[:H, :W] = plane
+
+    padded_kernel = np.zeros((req_H,req_W),dtype=np.complex128)
+    padded_kernel[:kh, :kw] = kernel
 
 
 def convolve_plane(plane, kernel, engine, circular=False):
@@ -114,6 +155,15 @@ def convolve_image(image, kernel, engine, circular=False):
     raise NotImplementedError("Implement convolve_image")
 
 
+def getvalue(image,i,j):
+
+    row , col = image.shape
+
+    if (0 <= i < row) and (0 <= j < col):
+        return image[i][j]
+
+    else: return 0 
+    
 def convolve_plane_direct(plane, kernel):
     """
     Spatial convolution, written out literally, as the correctness oracle and
@@ -126,8 +176,23 @@ def convolve_plane_direct(plane, kernel):
     correct. It is never applied to a full 512x512 image (see run_single).
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement convolve_plane_direct")
+    r,c = plane.shape
+    h,w = kernel.shape
 
+    matrix = np.zeros((r, c), dtype=np.complex128)
+    for row in range(r):
+        for col in range(c):
+
+            total = 0
+
+            for height in range(h):
+                for width in range(w):
+
+                    total += getvalue(plane, row + h//2 - height, col + w//2 - width) * kernel[height, width]
+
+            matrix[row, col] = total
+
+    return matrix
 
 def run_single(path, kernel_name, param, engine_name, out_dir, gray=False):
     """
