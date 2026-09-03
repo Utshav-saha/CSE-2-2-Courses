@@ -59,7 +59,22 @@ def to_limbs(text, base_digits=BASE_DIGITS):
         sees it.
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement to_limbs")
+    sign = 1
+    if text[0] == "-":
+        sign= -1
+        text= text[1:]
+    elif text[0] == "+":
+        text= text[1:]
+
+    limbs = []
+    while len(text) > 0:
+        end = len(text)
+        start = max(0,(end-base_digits))
+        number = int(text[start : end ])
+        limbs.append(number)
+        text = text[0:start] 
+
+    return sign, np.array(limbs, dtype=np.int64)
 
 
 def from_limbs(sign, limbs, base_digits=BASE_DIGITS):
@@ -76,8 +91,38 @@ def from_limbs(sign, limbs, base_digits=BASE_DIGITS):
     str
         The decimal representation. "0" must come out as "0", not "-0" or "".
     """
+    base = 10 ** base_digits
+    digits = []
+    carry = 0
     # TODO: implement this function
-    raise NotImplementedError("Implement from_limbs")
+    for limb in limbs:
+        number = limb + carry
+    
+        digit = number % base
+        digits.append(digit)
+        carry = number // base
+
+    # extra carry thakte pare last digit e add korar por
+    while carry > 0:
+        digits.append(carry%base)
+        carry = carry // base
+
+    # zfill : 15 -> 0015 korte hobe
+    decimal_list = [str(d).zfill(base_digits) for d in digits]
+    decimal_string = "".join(decimal_list[::-1])
+
+    # leading 0 trim 
+    decimal_string = decimal_string.lstrip("0")
+
+    # ekdom 0 hole empty string
+    if not decimal_string:
+        return "0" 
+
+    if sign == -1:
+        return "-"+decimal_string
+
+    return decimal_string
+    
 
 
 def multiply_transform(a, b, engine):
@@ -111,8 +156,22 @@ def multiply_transform(a, b, engine):
         you used (report.txt has to state it).
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement multiply_transform")
+    len1 = len(a)
+    len2 = len(b)
+    length = next_power_of_two(len1+len2-1)
 
+    padded_a = np.pad(a, (0, length - len1))
+    padded_b = np.pad(b, (0, length - len2))
+
+    transformed_a = engine.transform(padded_a)
+    transformed_b = engine.transform(padded_b)
+
+    multiplied = transformed_a * transformed_b
+    result = engine.inverse(multiplied)
+
+    coeff = np.round(result.real).astype(np.int64)
+
+    return coeff, length
 
 def multiply_schoolbook(a, b):
     """
@@ -123,8 +182,13 @@ def multiply_schoolbook(a, b):
     very small constant factor, and constant factors decide who wins at small
     sizes.
     """
-    # TODO (optional): implement this function
-    raise NotImplementedError("Optional: implement multiply_schoolbook")
+    if len(a) > len(b):
+        a, b = b, a
+
+    result = np.zeros(len(a) + len(b) - 1)
+    for i, limb in enumerate(a):
+        result[i:i + len(b)] += limb * b
+    return result
 
 
 def multiply(text_a, text_b, method):
