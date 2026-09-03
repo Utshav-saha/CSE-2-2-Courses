@@ -101,6 +101,55 @@ def linear(plane, kernel, engine):
     padded_kernel = np.zeros((req_H,req_W),dtype=np.complex128)
     padded_kernel[:kh, :kw] = kernel
 
+    F = transform_2d(padded_plane,engine)
+    K = transform_2d(padded_kernel,engine)
+
+    transformed = F * K 
+
+    return transformed, H, W, kh, kw
+
+    # result = engine.inverse(transformed)
+    # return result.real()
+
+def circular(plane, kernel , engine):
+    H, W = plane.shape
+    kh, kw = kernel.shape
+
+    req_H = H 
+    req_W = W 
+
+    if isinstance(engine, FFTTransformer):
+        req_H = next_power_of_two(req_H)
+        req_W = next_power_of_two(req_W)
+
+    padded_plane = np.zeros((req_H,req_W),dtype=np.complex128)
+    padded_plane[:H, :W] = plane
+
+    padded_kernel = np.zeros((req_H,req_W),dtype=np.complex128)
+    padded_kernel[:kh, :kw] = kernel
+
+    padded_kernel = np.roll(padded_kernel,shift= (-(kh//2), -(kw//2)), axis=(0, 1))
+
+    F = transform_2d(padded_plane, engine)
+    K = transform_2d(padded_kernel, engine)
+
+    transformed = F * K 
+
+    return transformed, H, W, kh, kw
+
+
+def crop(image, H, W, kh, kw):
+
+    start_row = kh//2
+    start_col = kw//2
+
+    end_row = start_row + H
+    end_col = start_col + W
+
+    return image[start_row:end_row, start_col:end_col] 
+
+
+
 
 def convolve_plane(plane, kernel, engine, circular=False):
     """
@@ -141,7 +190,21 @@ def convolve_plane(plane, kernel, engine, circular=False):
     numpy.ndarray of float64, same shape as ``plane``
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement convolve_plane")
+    if not circular:
+        transformed, H, W, kh, kw = linear(plane, kernel, engine)
+        result = engine.inverse(transformed, engine)
+        real_part = result.real()
+
+        cropped = crop(real_part, H , W , kh , kw)
+        return cropped
+
+    else:
+        transformed, H, W, kh, kw = circular(plane, kernel, engine)
+        result = engine.inverse(transformed, engine)
+        real_part = result.real()
+
+        return real_part
+
 
 
 def convolve_image(image, kernel, engine, circular=False):
@@ -152,6 +215,14 @@ def convolve_image(image, kernel, engine, circular=False):
     plane is convolved independently, then stacked back together.
     """
     # TODO: implement this function
+
+    # grayscale e 
+    if image.ndim == 2:
+        return convolve_plane(image, kernel, engine, circular=circular)
+
+    # color
+    elif image.ndim == 3:
+    
     raise NotImplementedError("Implement convolve_image")
 
 
