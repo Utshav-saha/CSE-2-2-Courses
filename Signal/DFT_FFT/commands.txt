@@ -1,0 +1,5 @@
+python3 bigmul.py inputs/1.txt --engine dft --out-dir outputs/task_a/1
+python3 bigmul.py inputs/2.txt --engine dft --out-dir outputs/task_a/2
+python3 bigmul.py inputs/3.txt --engine fft --out-dir outputs/task_a/3
+python3 bigmul.py inputs/4.txt --engine fft --out-dir outputs/task_a/4
+python3 bigmul.py --benchmark --out-dir outputs/task_a/benchmark

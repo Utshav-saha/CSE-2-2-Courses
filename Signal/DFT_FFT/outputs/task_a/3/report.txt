@@ -1,0 +1,9 @@
+Task A
+input file: inputs/3.txt
+method: fft
+digit count of A , B: 2048 / 2048
+base: 10000
+limbs of A , B : 512 / 512
+transform length N: 1024
+digits of product : 4095
+Vedict : MATCH

@@ -1,0 +1,9 @@
+Task A
+input file: inputs/1.txt
+method: dft
+digit count of A , B: 12 / 9
+base: 10000
+limbs of A , B : 3 / 3
+transform length N: 8
+digits of product : 21
+Vedict : MATCH

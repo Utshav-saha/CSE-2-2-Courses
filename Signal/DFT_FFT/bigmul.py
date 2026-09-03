@@ -24,7 +24,7 @@ import numpy as np
 
 from bench_utils import plot_runtime_curve, time_best, timing_table_lines
 from io_utils import random_decimal, read_operands, write_report, write_text
-from transforms import DFTAnalyzer, FFTTransformer, next_power_of_two
+from transforms import DFTAnalyzer, FFTTransformer,ArbitraryLengthFFT, next_power_of_two
 
 # Python 3.11+ refuses to print integers longer than 4300 digits unless this
 # limit is raised, and the verification step below prints one.
@@ -185,7 +185,7 @@ def multiply_schoolbook(a, b):
     if len(a) > len(b):
         a, b = b, a
 
-    result = np.zeros(len(a) + len(b) - 1)
+    result = np.zeros(len(a) + len(b) - 1, dtype=np.int64)
     for i, limb in enumerate(a):
         result[i:i + len(b)] += limb * b
     return result
@@ -199,7 +199,31 @@ def multiply(text_a, text_b, method):
     (bonus). Pick the engine, convert to limbs, convolve, carry, re-sign.
     """
     # TODO: implement this function
-    raise NotImplementedError("Implement multiply")
+    sign_a, limbs_a = to_limbs(text_a)
+    sign_b, limbs_b = to_limbs(text_b)
+
+    if method == "fft":
+        engine = FFTTransformer()
+        coeffs,N = multiply_transform(limbs_a, limbs_b, engine)
+
+    elif method == "dft":
+        engine = DFTAnalyzer()
+        coeffs,N = multiply_transform(limbs_a, limbs_b, engine)
+
+    elif method == "schoolbook":
+        coeffs = multiply_schoolbook(limbs_a, limbs_b)
+        N= len(limbs_a) + len(limbs_b) - 1
+
+    elif method == "arbitrary":
+        engine = ArbitraryLengthFFT()
+        coeffs,N = multiply_transform(limbs_a, limbs_b, engine)
+
+    sign = sign_a * sign_b
+    result = from_limbs(sign, coeffs)
+
+    return result, N, limbs_a, limbs_b
+
+
 
 
 def run_single(path, method, out_dir):
@@ -218,8 +242,32 @@ def run_single(path, method, out_dir):
     This is the ONLY place Python's big integers may be used. Print MATCH or
     MISMATCH; a MISMATCH must not be silently swallowed.
     """
-    # TODO: implement this function
-    raise NotImplementedError("Implement run_single")
+    text_a, text_b = read_operands(path)
+    product, transform_length, limbs_a, limbs_b = multiply(text_a, text_b, method)
+
+    verdict = ""
+        
+    if int(product) == int(text_a) * int(text_b):
+        verdict = "MATCH"
+    else:
+        verdict = "MISMATCH"
+    
+    product_path = os.path.join(out_dir, "product.txt")
+    report_path = os.path.join(out_dir, "report.txt")
+
+    write_text(product_path, product)
+    write_report(report_path,[
+        "Task A",
+        "input file: %s" % path,
+        "method: %s" % method,
+        "digit count of A , B: %d / %d" % (len(text_a.lstrip("+-")), len(text_b.lstrip("+-"))),
+        "base: %d" % 10**BASE_DIGITS,
+        "limbs of A , B : %d / %d" % (len(limbs_a), len(limbs_b)),
+        "transform length N: %d" % transform_length,
+        "digits of product : %d" % len(product.lstrip("-")),
+        "Vedict : %s" % verdict,])
+    
+    print(verdict)
 
 
 # ---------------------------------------------------------------------------
