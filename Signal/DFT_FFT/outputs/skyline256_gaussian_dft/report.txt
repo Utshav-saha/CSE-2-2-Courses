@@ -1,0 +1,8 @@
+Task B -- 2D convolution through the frequency domain
+image : images/skyline256.png  (256 x 256, gray)
+kernel : gaussian  (21 x 21)
+engine: fft
+linear-conv size : 276 x 276
+transform size: 512 x 512
+max |spectral - direct| on 64x64 crop : 3.442e-15
+verification: MATCH

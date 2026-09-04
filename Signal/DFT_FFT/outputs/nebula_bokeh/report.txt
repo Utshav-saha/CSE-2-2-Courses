@@ -1,0 +1,8 @@
+Task B -- 2D convolution through the frequency domain
+image : images/nebula512.png  (512 x 512, RGB)
+kernel : bokeh  (55 x 55)
+engine: fft
+linear-conv size : 566 x 566
+transform size: 1024 x 1024
+max |spectral - direct| on 64x64 crop : 6.384e-15
+verification: MATCH

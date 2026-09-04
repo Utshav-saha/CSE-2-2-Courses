@@ -231,14 +231,14 @@ def convolve_image(image, kernel, engine, circular=False):
         return result
     
 
-def getvalue(image,i,j):
+# def getvalue(image,i,j):
 
-    row , col = image.shape
+#     row , col = image.shape
 
-    if (0 <= i < row) and (0 <= j < col):
-        return image[i][j]
+#     if (0 <= i < row) and (0 <= j < col):
+#         return image[i][j]
 
-    else: return 0 
+#     else: return 0 
     
 def convolve_plane_direct(plane, kernel):
     """
@@ -264,7 +264,12 @@ def convolve_plane_direct(plane, kernel):
             for height in range(h):
                 for width in range(w):
 
-                    total += getvalue(plane, row + h//2 - height, col + w//2 - width) * kernel[height, width]
+                    # total += getvalue(plane, row + h//2 - height, col + w//2 - width) * kernel[height, width]
+                    target_r = row + h//2 - height
+                    target_c = col + w//2 - width
+                    
+                    if 0 <= target_r < r and 0 <= target_c < c:
+                        total += plane[target_r, target_c] * kernel[height, width]
 
             matrix[row, col] = total
 

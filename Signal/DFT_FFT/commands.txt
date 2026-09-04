@@ -7,7 +7,10 @@ python3 bigmul.py --benchmark --out-dir outputs/task_a/benchmark
 
 python3 image_conv.py images/skyline512.png --kernel bokeh --param 9 \
         --engine fft --out-dir outputs/skyline_bokeh
+python3 image_conv.py images/nebula512.png --kernel bokeh --param 27 \
+        --engine fft --out-dir outputs/nebula_bokeh
 python3 image_conv.py images/sunset512.png --gray --kernel motion \
     --param 41 --engine fft --out-dir outputs/sunset_motion
+python3 image_conv.py images/skyline256.png --gray --kernel gaussian --param 21 --engine fft --out-dir outputs/skyline256_gaussian_dft
 python3 image_conv.py images/skyline512.png --benchmark \
     --out-dir outputs/benchmark
