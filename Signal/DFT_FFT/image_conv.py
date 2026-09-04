@@ -420,6 +420,8 @@ def run_benchmark(path, out_dir):
         "naive DFT", lambda img: (lambda: convolve_plane(img, kernel, DFTAnalyzer())), crops)
     size_series["Radix-2 FFT (row-column)"] = sweep(
         "radix-2 FFT", lambda img: (lambda: convolve_plane(img, kernel, FFTTransformer())), crops)
+    size_series["Arbitrary FFT (row-column)"] = sweep(
+        "arbitrary FFT", lambda img: (lambda: convolve_plane(img, kernel, ArbitraryLengthFFT())), crops)
     size_series["Direct spatial convolution"] = sweep(
         "direct spatial", lambda img: (lambda: convolve_plane_direct(img, kernel)), crops)
 
@@ -439,6 +441,8 @@ def run_benchmark(path, out_dir):
         "direct spatial", lambda k: (lambda: convolve_plane_direct(image, k)), kernels)
     kernel_series["Radix-2 FFT (row-column)"] = sweep(
         "radix-2 FFT", lambda k: (lambda: convolve_plane(image, k, FFTTransformer())), kernels)
+    kernel_series["Arbitrary FFT (row-column)"] = sweep(
+        "arbitrary FFT", lambda k: (lambda: convolve_plane(image, k, ArbitraryLengthFFT())), kernels)
 
     kernel_plot = os.path.join(out_dir, "runtime_vs_kernel_size.png")
     plot_runtime_curve(kernel_series, kernel_plot,

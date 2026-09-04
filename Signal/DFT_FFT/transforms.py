@@ -232,8 +232,35 @@ class ArbitraryLengthFFT(FFTTransformer):
 
     def transform(self, x):
         # TODO (bonus): implement this method
-        raise NotImplementedError("Bonus: implement ArbitraryLengthFFT.transform")
+        N = len(x)
+        req_len = 2*N -1 
+        M = next_power_of_two(req_len)
+
+        a_n = x * np.exp(-1j * np.pi * (np.arange(N)**2)/N)
+        b_n = np.exp(1j * np.pi * (np.arange(N)**2)/N)
+
+        padded_a = np.pad(a_n,(0, M-N))
+        padded_b = np.pad(b_n,(0, M-N))
+
+        # negative gulao lagbe b te , repeat hobe so just copy
+        padded_b[M - N + 1:] = b_n[1:][::-1]
+
+        transformed_a = FFTTransformer().transform(padded_a)
+        transformed_b = FFTTransformer().transform(padded_b)
+
+        convolved = transformed_a*transformed_b
+
+        # etar size M but nibo N
+        result = FFTTransformer().inverse(convolved)
+
+        result = result[:N]*np.exp(-1j * np.pi * (np.arange(N)**2)/N)
+
+        return result
 
     def inverse(self, spectrum):
         # TODO (bonus): implement this method
-        raise NotImplementedError("Bonus: implement ArbitraryLengthFFT.inverse")
+        N = len(spectrum)
+        conjugated_spectrum = np.conjugate(spectrum)
+        x_n = self.transform(conjugated_spectrum)
+        x_n = np.conjugate(x_n)/ N
+        return x_n

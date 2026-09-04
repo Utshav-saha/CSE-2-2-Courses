@@ -158,7 +158,10 @@ def multiply_transform(a, b, engine):
     # TODO: implement this function
     len1 = len(a)
     len2 = len(b)
-    length = next_power_of_two(len1+len2-1)
+    if isinstance(engine, ArbitraryLengthFFT):
+        length = len1+len2-1
+    else:
+        length = next_power_of_two(len1+len2-1)
 
     padded_a = np.pad(a, (0, length - len1))
     padded_b = np.pad(b, (0, length - len2))
@@ -307,6 +310,7 @@ def run_benchmark(out_dir):
     series = {}
     series["Naive DFT"] = measure("naive DFT", "dft", DFT_SIZES)
     series["Radix-2 FFT"] = measure("radix-2 FFT", "fft", FFT_SIZES)
+    series["Arbitrary FFT"] = measure("Bluestein FFT", "arbitrary", FFT_SIZES)
     try:                                    # optional third curve
         series["Schoolbook"] = measure("schoolbook", "schoolbook", FFT_SIZES)
     except NotImplementedError:
