@@ -203,7 +203,7 @@ def convolve_plane(plane, kernel, engine, circular=False):
         transformed, H, W, kh, kw = circular_spectrum(plane, kernel, engine)
         result = inverse_2d(transformed, engine)
         real_part = result.real
-
+        # should return (:H, :W)
         return real_part
 
 

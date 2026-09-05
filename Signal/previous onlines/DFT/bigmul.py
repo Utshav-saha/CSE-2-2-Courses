@@ -163,7 +163,7 @@ def multiply_transform(a, b, engine):
     else:
         length = next_power_of_two(len1+len2-1)
 
-    padded_a = np.pad(a, (0, length - len1))
+    padded_a = np.pad(a, (0, length - len1)) # 0 mane a er surute 0 ta padding , seshe length-len1 ta padding 
     padded_b = np.pad(b, (0, length - len2))
 
     transformed_a = engine.transform(padded_a)
