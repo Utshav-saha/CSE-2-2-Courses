@@ -1,0 +1,9 @@
+Lab evaluation -- hybrid image
+low-frequency source : images/sunset512.png
+high-frequency source: images/skyline512.png
+image shape          : (512, 512)
+kernel               : Gaussian 31 x 31
+engine               : fft
+transform shape      : 1024 x 1024
+max |combined - reference| : 3.869e-14
+verification         : MATCH

@@ -31,17 +31,24 @@ def choose_transform_shape(image_shape, kernel_shape, engine):
 
     # Use the linear-convolution padding rule from the offline to compute the
     # minimum required height and width without circular wraparound.
-    # full_height =
-    # full_width =
+
+    h,w = image_shape
+    kh, kw = kernel_shape
+    full_height = h + kh -1
+    full_width = w + kw -1
 
     if engine.name == "fft":
         # Adjust both dimensions to lengths supported by the radix-2 engine.
         # return
-        raise NotImplementedError("TODO 1: radix-2 transform shape")
+        req_height = next_power_of_two(full_height)
+        req_width = next_power_of_two(full_width)
+
+        return req_height, req_width
+
+    return full_height, full_width
 
     # Other engines can use the minimum dimensions calculated above.
     # return
-    raise NotImplementedError("TODO 1: linear-convolution transform shape")
 
 
 def centred_delta_spectrum(transform_shape, kernel_shape):
@@ -80,12 +87,11 @@ def hybrid_plane(low_plane, high_plane, kernel, engine):
 
     # Combine the available spectra so that low_plane supplies the smooth
     # component and high_plane supplies the complementary detail component.
-    # combined =
+    combined = (low_spectrum*kernel_spectrum) + high_spectrum*(delta_spectrum-kernel_spectrum)
 
     # Transform the combined spectrum back and discard numerical imaginary
     # roundoff, as done in the original image-convolution pipeline.
-    # full =
-    raise NotImplementedError("TODO 2: combine spectra and invert")
+    full = inverse_2d(combined, engine).real
     row, column = kernel.shape[0] // 2, kernel.shape[1] // 2
     return full[row:row + low_plane.shape[0],
                 column:column + low_plane.shape[1]]
@@ -100,16 +106,12 @@ def hybrid_image(low_image, high_image, kernel, engine):
     if low_image.shape != high_image.shape:
         raise ValueError("the two images must have the same shape")
     if low_image.ndim == 2:
-        # A grayscale image contains one plane; process that pair directly.
-        # return
-        raise NotImplementedError("TODO 3: process a grayscale image")
+            return hybrid_plane(low_image, high_image, kernel, engine)
     if low_image.ndim == 3 and low_image.shape[2] == 3:
-        # Process corresponding RGB channels independently, then rebuild one
-        # colour image from the three resulting planes.
-        # planes =
-        # return
-        raise NotImplementedError("TODO 3: process an RGB image")
-    raise ValueError("images must be grayscale or RGB")
+        result = np.empty_like(low_image)
+        for channel in range(3):
+            result[:, :, channel] = hybrid_plane(low_image[:, :, channel], high_image[:, :, channel],kernel, engine)
+        return result
 
 
 def _make_engine(name):
