@@ -139,9 +139,9 @@ class FFTTransformer(DFTAnalyzer):
 
     name = "fft"
 
-    def reverse_bit(self,k, num):
+    def reverse_bit(self,k, digit_num):
         reversed = 0
-        pos = num-1
+        pos = digit_num-1
 
         while k > 0:
             bit = k&1
@@ -242,7 +242,7 @@ class ArbitraryLengthFFT(FFTTransformer):
         padded_a = np.pad(a_n,(0, M-N))
         padded_b = np.pad(b_n,(0, M-N))
 
-        # negative gulao lagbe b te , repeat hobe so just copy
+        # negative gulao lagbe b te for k-n , repeat hobe so just copy
         padded_b[M - N + 1:] = b_n[1:][::-1]
 
         transformed_a = FFTTransformer().transform(padded_a)
