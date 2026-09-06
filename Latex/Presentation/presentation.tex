@@ -2,11 +2,28 @@
 \documentclass[aspectratio=169,8pt]{beamer}
 
 % metroplis theme
-\usetheme[numbering=counter,progressbar=none]{metropolis}
+\usetheme[numbering=counter,progressbar=frametitle]{metropolis}
+\setbeamercolor{progress bar}{
+    fg=orange
+}
 
-\usefonttheme{default} 
-\usepackage[sfdefault,book,medium]{FiraSans}
-\usepackage{FiraMono}
+% Fonts
+% -----------------------------
+\usefonttheme{professionalfonts}
+\usepackage{fontspec}
+
+% Raleway = normal/body text
+\setsansfont{Raleway}[
+    UprightFont = * Regular,
+    BoldFont = * Bold,
+    ItalicFont = * Italic
+]
+
+% Montserrat = headings
+\newfontfamily\montserrat{Montserrat}[
+    UprightFont = * Regular,
+    BoldFont = * Bold
+]
 
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,calc,fit}
@@ -38,12 +55,40 @@
 \setbeamertemplate{itemize item}{\textbullet}
 \setbeamertemplate{itemize subitem}{$\circ$}
 
-\setbeamerfont{frametitle}{size=\large,series=\normalfont} 
-\setbeamerfont{title}{size=\LARGE,series=\normalfont}
-\setbeamerfont{subtitle}{size=\large,series=\normalfont}
-\setbeamerfont{author}{size=\normalsize}
+% presentation title
+\setbeamerfont{title}{
+    family=\montserrat,
+    size=\LARGE,
+    series=\bfseries
+}
 
-% ---------- Custom Info Boxes (matching screenshots exactly) ----------
+%  slide title
+\setbeamerfont{frametitle}{
+    family=\montserrat,
+    size=\large,
+    series=\mdseries
+
+}
+
+% Subtitle
+\setbeamerfont{subtitle}{
+    family=\sffamily,
+    size=\large,
+    series=\mdseries
+}
+
+% Author
+\setbeamerfont{author}{
+    family=\sffamily,
+    size=\normalsize
+}
+
+% Normal slide text
+\setbeamerfont{normal text}{
+    family=\sffamily
+}
+
+% ---------- Info Boxes ----------
 \newtcolorbox{tealbox}[1]{
   colback=tealBg,
   colframe=tealBorder,
@@ -92,17 +137,16 @@
 }
 \newcommand{\takeaway}[1]{\begin{center}\begin{tikzpicture}\node[take]{#1};\end{tikzpicture}\end{center}}
 
-% ---------- Title Page Info ----------
+
 \title{Full Sharded Data Parallel}
 \subtitle{Lorem Ipsum}
 \author{Utshav Saha\\[0.5cm]\footnotesize sahaushno@gmal.com}
-\date{} % Empty date to match the reference image
+\date{}
 
 \begin{document}
 
-% ================================================================
-% Title Frame
-\begin{frame}[plain] % 'plain' removes header/footer for the title page
+
+\begin{frame}[plain] 
   \maketitle
 \end{frame}
 
@@ -119,7 +163,7 @@
   \only<2->{
     \draw[bigarr] (0,1.55) -- (0,0.92);
     \node[font=\normalsize\bfseries] at (0,0.65) {Break it into shards};
-    \foreach \x/\c/\s in {-1.5/red/$S_0$,-0.5/green/$S_1$,0.5/blue/$S_2$,1.5/orange/$S_3$}{
+    \foreach \x/\c/\s in {-1.5/mDarkTeal/$S_0$,-0.5/tealBorder/$S_1$,0.5/orange/$S_2$,1.5/violet/$S_3$}{
       \node[shard=\c, minimum width=0.84cm,minimum height=0.52cm] at (\x,-0.15) {\s};
     }
   }
@@ -156,7 +200,7 @@ In games, shards are small pieces that together complete one item. FSDP uses the
 \begin{center}
   \begin{tikzpicture}[x=1cm,y=1cm]
   \node[font=\bfseries\large] at (0,2.8) {DDP: replicated};
-  \foreach \i/\y/\c in {0/2.18/red,1/1.56/green,2/0.94/blue,3/0.32/orange}{
+  \foreach \i/\y/\c in {0/2.18/mDarkTeal,1/1.56/tealBorder,2/0.94/orange,3/0.32/violet}{
     \node[gpu,font=\scriptsize\bfseries] at (-1.95,\y) {GPU \i};
     \draw[rounded corners=4pt,draw=\c!70!black,fill=\c!10,thick] (-1.22,\y-0.20) rectangle (2.00,\y+0.20);
     \node[font=\scriptsize\bfseries] at (0.40,\y) {P + G + O};
@@ -172,7 +216,7 @@ In games, shards are small pieces that together complete one item. FSDP uses the
   \begin{tikzpicture}[x=1cm,y=1cm]
   \node[font=\bfseries\large] at (0,2.8) {FSDP: sharded};
   \only<2->{
-  \foreach \i/\y/\c/\s in {0/2.18/red/Shard 0,1/1.56/green/Shard 1,2/0.94/blue/Shard 2,3/0.32/orange/Shard 3}{
+  \foreach \i/\y/\c/\s in {0/2.18/mDarkTeal/Shard 0,1/1.56/tealBorder/Shard 1,2/0.94/orange/Shard 2,3/0.32/violet/Shard 3}{
     \node[gpu,font=\scriptsize\bfseries] at (-1.95,\y) {GPU \i};
     \node[shard=\c, minimum width=2.1cm] at (-0.10,\y) {\s};
   }
@@ -263,7 +307,6 @@ Sharding saves memory, but the current layer normally needs its full parameter t
     \foreach \x/\c in {-5.40/mDarkTeal,-1.80/tealBorder,1.80/orange,5.40/violet}{
       \draw[flow,draw=\c!75!black] (\x,1.65) -- (\x,1.10);
     }
-    % 3. Shift the ALL-GATHER box and its text down by 0.5
     \draw[rounded corners=5pt, draw=orange!75!black, fill=orange!9, thick]
       (-6.80,0.45) rectangle (6.80,1.05);
     \node[font=\normalsize\bfseries, text=orange!40!black] at (0,0.75) {ALL-GATHER};
@@ -272,10 +315,8 @@ Sharding saves memory, but the current layer normally needs its full parameter t
   }
 
   \only<3->{
-    % 4. Move the connecting bottom arrows down
     \foreach \x in {-5.40,-1.80,1.80,5.40}{\draw[flow,draw=orange!70!black] (\x,0.40) -- (\x,0.10);}
     
-    % 5. Wrap the bottom GPUs in a yshift scope to cleanly move them down together
     \begin{scope}[yshift=-0.5cm]
       \foreach \i/\x in {0/-5.40,1/-1.80,2/1.80,3/5.40}{
         \draw[rank] (\x-1.40,-0.55) rectangle (\x+1.40,0.55);
@@ -397,13 +438,12 @@ If each GPU updates its shard using only its local gradient, the model shards wi
   shardbox/.style={draw=mDarkTeal!75, fill=blueBg!90, rounded corners=4pt, thick, minimum width=1.55cm, minimum height=0.55cm, font=\footnotesize\ttfamily, text=mDarkTeal},
   vec/.style={font=\scriptsize\ttfamily, text=mDarkTeal},
   lab/.style={font=\scriptsize\bfseries, text=mDarkTeal},
-  thinarr/.style={-{Latex[length=2mm]}, thick, mDarkTeal!60}]
+  thinarr/.style={-{Latex[length=1.5mm]}, thin, mDarkTeal!60}]
 
-  % fixed bounding box keeps overlays stable
-  \path (-6.55,-1.12) rectangle (6.55,3.08);
+  \path (-6.55,-1.12) rectangle (6.55,3.35);
 
-  % Step 1: local contributions
-  \node[font=\normalsize\bfseries,text=mDarkTeal] at (-4.15,2.85) {1. Local gradients};
+  \node[font=\normalsize\bfseries,text=mDarkTeal] at (-4.63,2.85) {1. Local gradients};
+  
   \only<1->{
     \draw[rankbox] (-6.05,1.97) rectangle (-3.20,2.51);
     \node[lab,anchor=west] at (-5.88,2.24) {GPU 0};
@@ -419,15 +459,22 @@ If each GPU updates its shard using only its local gradient, the model shards wi
     \node[vec,anchor=east] at (-3.38,0.14) {$[0,2,3,1]$};
   }
 
-  % Step 2: reduce / synchronize
 \only<2->{
 
     \node[syncbox] (sync) at (-0.25,1.26)
     {REDUCE / SYNCHRONIZE\\[-1pt]average component-wise};
 
-    \foreach \y in {2.24,1.54,0.84,0.14}{
-        \draw[thinarr] (-3.08,\y) -- (sync.west);
-    }
+    \draw[thinarr]
+    (-3.08,2.24) -- ([yshift=0.25cm]sync.west);
+
+    \draw[thinarr]
+    (-3.08,1.54) -- ([yshift=0.08cm]sync.west);
+
+    \draw[thinarr]
+    (-3.08,0.84) -- ([yshift=-0.08cm]sync.west);
+
+    \draw[thinarr]
+    (-3.08,0.14) -- ([yshift=-0.25cm]sync.west);
 }
 
 \only<3->{
@@ -447,8 +494,7 @@ If each GPU updates its shard using only its local gradient, the model shards wi
     {one synchronized global gradient};
 }
 
-  % Step 3: scatter
-% Step 3: scatter
+
 \only<4->{
 
     \node[
@@ -457,19 +503,17 @@ If each GPU updates its shard using only its local gradient, the model shards wi
     ] at (4.60,2.85)
     {2. Scatter shards};
 
-    % smaller scatter box
     \node[
         syncbox,
         minimum width=2.65cm,
         minimum height=0.62cm
-    ] (scatter) at (4.60,1.85)
+    ] (scatter) at (4.60,2.2)
     {SCATTER};
 
-    % Route synchronized gradient to scatter without
-    % cutting through the output GPU boxes
+
     \draw[thinarr]
         (fullg.east)
-        -- ++(0.45,0)
+        -- ++(1.5,0)
         |- (scatter.west);
 }
   \only<5->{
@@ -510,31 +554,26 @@ If each GPU updates its shard using only its local gradient, the model shards wi
         at (5.78,-0.61) {$G_3 = 1.5$};
 
 
-    % ------------------------------------------------
-    % Clean scatter distribution
-    % ------------------------------------------------
 
-    % down from scatter
     \draw[
         thick,
         mDarkTeal!60
     ]
-        (scatter.south)
-        -- (6.20,1.55)
-        -- (6.20,-0.61);
-
-    % arrows into each GPU row
-    \draw[thinarr]
-        (6.20,1.22) -- (5.95,1.22);
+       (scatter.east)
+    -- ++(0.35,0)
+    -- ++(0,-2.9);
 
     \draw[thinarr]
-        (6.20,0.61) -- (5.95,0.61);
+        (6.3,1.22) -- (5.95,1.22);
 
     \draw[thinarr]
-        (6.20,0.00) -- (5.95,0.00);
+        (6.30,0.61) -- (5.95,0.61);
 
     \draw[thinarr]
-        (6.20,-0.61) -- (5.95,-0.61);
+        (6.30,0.00) -- (5.95,0.00);
+
+    \draw[thinarr]
+        (6.30,-0.61) -- (5.95,-0.61);
 }
 \end{tikzpicture}
 \end{center}
@@ -550,14 +589,12 @@ First, gradients become synchronized by reduction. Then the synchronized result 
 \transfade[duration=0.2]
 \begin{center}
 \begin{tikzpicture}[x=1cm,y=1cm]
-  % left-to-right top row
   \node[stage=mDarkTeal,minimum width=2.2cm] (p) at (-5.1,1.60) {Sharded\\params};
   \only<2->{\node[stage=orange,minimum width=2.2cm] (ag1) at (-2.55,1.60) {All-Gather}; \draw[arr] (p) -- (ag1);}
   \only<3->{\node[stage=tealBorder,minimum width=2.2cm] (fw) at (0,1.60) {Forward}; \draw[arr] (ag1) -- (fw);}
   \only<4->{\node[stage=violet,minimum width=2.2cm] (re) at (2.55,1.60) {Reshard}; \draw[arr] (fw) -- (re);}
   \only<5->{\node[stage=orange,minimum width=2.2cm] (ag2) at (5.1,1.60) {All-Gather}; \draw[arr] (re) -- (ag2);}
 
-  % bottom row reversed
   \only<6->{\node[stage=tealBorder,minimum width=2.2cm] (bw) at (5.1,-0.10) {Backward}; \draw[arr] (ag2) -- (bw);}
   \only<7->{\node[stage=violet,minimum width=2.2cm] (rs) at (2.55,-0.10) {Reduce-Scatter}; \draw[arr] (bw) -- (rs);}
   \only<8->{\node[stage=mDarkTeal,minimum width=2.2cm] (g) at (0,-0.10) {Sharded\\grads}; \draw[arr] (rs) -- (g);}
@@ -574,15 +611,7 @@ First, gradients become synchronized by reduction. Then the synchronized result 
 % ================================================================
 \begin{frame}[t]{19. Final trade-off: memory down, communication up}
 \transfade[duration=0.2]
-% --- geometry grid ---------------------------------------------------------
-% Total 13.646cm = the takeaway box width (13.4cm text + 2x3.5pt inner sep),
-% so the table, both coloured boxes and the takeaway share one left and one
-% right edge:  left 7.70 + gutter 0.60 + right 5.346 = 13.646.
-% The table measures 7.604cm x 3.373cm.  tabular* stretches it to exactly the
-% column width so it is flush with the bluebox; the right-hand figure is given
-% a bounding box of exactly the table's height, so the two coloured boxes
-% start level.  \vspace{0pt} aligns both minipages by their tops, and
-% \parskip=0 replaces beamer's paragraph glue with the explicit gaps below.
+
 \setlength{\parskip}{0pt}
 \noindent\makebox[\linewidth]{%
 \begin{minipage}[t]{7.70cm}\vspace{0pt}
@@ -607,9 +636,7 @@ FSDP spends more network communication to reduce persistent GPU memory and make 
 \begin{minipage}[t]{5.346cm}\vspace{0pt}
 \visible<3->{%
 \begin{tikzpicture}[x=1cm,y=1cm]
-  % bounding box height 3.373cm = table height, so the tealbox below starts
-  % level with the bluebox; bars span the full column width, flush with the
-  % heading, the tealbox and the takeaway
+  
   \path (-2.673,0) rectangle (2.673,3.373);
   \node[font=\bfseries\large,text=mDarkTeal] at (0,3.09) {Overlap hides some cost};
   \draw[rounded corners=4pt,fill=tealBg,draw=tealBorder,thick] (-2.673,2.14) rectangle (2.673,2.62);
@@ -624,7 +651,7 @@ FSDP spends more network communication to reduce persistent GPU memory and make 
 \end{tealbox}}
 \end{minipage}}
 \par\vspace{0.22cm}
-% the take node directly (not \takeaway) so no \begin{center} glue is added
+
 \noindent\makebox[\linewidth]{\visible<5->{\begin{tikzpicture}\node[take]{FSDP enables larger-model training by trading \textbf{memory} for \textbf{communication}.};\end{tikzpicture}}}
 \end{frame}
 
