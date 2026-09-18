@@ -7,10 +7,18 @@ import matplotlib.pyplot as plt
 
 def base_spectrum(w, W):
     # TODO: Return the triangular spectrum.
+    return np.maximum(1- np.abs(w)/ W, 0)
     raise NotImplementedError("Complete this TODO")
 
 def sampled_spectrum(w, W, T, K):
     # TODO: Return the sum of all specified shifted and scaled spectral copies.
+    ws = 2 * np.pi / T
+    result = np.zeros_like(w)
+
+    for k in range (-K, K+1):
+        result += base_spectrum(w-k*ws, W)/ T
+
+    return result
     raise NotImplementedError("Complete this TODO")
 
 if __name__ == "__main__":
