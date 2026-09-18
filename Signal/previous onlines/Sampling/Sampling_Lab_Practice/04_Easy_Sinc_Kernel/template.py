@@ -7,10 +7,18 @@ import matplotlib.pyplot as plt
 
 def normalized_sinc(u):
     # TODO: Evaluate the defined sinc, including u=0, without a built-in sinc.
+    result = np.ones_like(u)
+    u = np.asarray(u, dtype=float)
+    nonzero = u != 0
+
+    result[nonzero] = np.sin(np.pi * u[nonzero]) / (np.pi * u[nonzero])
+    return result
     raise NotImplementedError("Complete this TODO")
 
 def ideal_pulse(t, fs):
     # TODO: Return the ideal interpolation pulse at the supplied times.
+    u = np.asarray(t) * fs
+    return normalized_sinc(u)
     raise NotImplementedError("Complete this TODO")
 
 if __name__ == "__main__":
