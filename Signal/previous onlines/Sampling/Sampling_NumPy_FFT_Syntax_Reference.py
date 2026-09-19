@@ -722,11 +722,11 @@ def sinc_reconstruct_loop(samples, fs, t_new):
     )
 
     for i in range(len(t_new)):
-        for k in range(len(samples)):
+        for n in range(len(samples)):
             result[i] += (
-                samples[k]
+                samples[n]
                 * np.sinc(
-                    (t_new[i] - k * T) / T
+                    (t_new[i] - n * T) / T
                 )
             )
 
