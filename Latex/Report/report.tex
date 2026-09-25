@@ -1,0 +1,456 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO:} #1\textbf{]}}}
+% \figplaceholder{description}{height}
+\newcommand{\figplaceholder}[2]{%
+  \fbox{\parbox[c][#2][c]{0.9\linewidth}{\centering\small\textit{#1}}}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newcommand{\Psiu}{\Psi_u}
+
+\begin{document}
+
+\setcounter{section}{2}
+
+\section{FSDP Architecture}
+\label{sec:fsdp}
+
+\todo{Opening paragraph (strongest in the section). FSDP shards model
+state across GPUs and gathers the parameters of one unit only when that
+unit computes. Preview \cref{sec:notation,sec:model-state,sec:collectives,%
+sec:forward,sec:backward,sec:optimizer,sec:iteration,sec:memory,%
+sec:comm,sec:strategies,sec:tradeoffs}.}
+
+\subsection{Notation and Definitions}
+\label{sec:notation}
+
+\todo{Short intro sentence to the notation.}
+
+\begin{table}[ht]
+  \centering
+  
+  \begin{tabular}{lc}
+    \toprule
+    Symbol & Meaning \\
+    \midrule
+    $N$          & Number of GPUs  \\
+    $\Psi$       & Total number of model parameters \\
+    $\Psiu$      & Number of parameters in one FSDP unit \\
+    $W$          & Parameters of one unit (flattened) \\
+    $W_i$        & The $i$-th shard of $W$, owned by rank $i$ \\
+    $g^{(i)}$    & Local gradient computed on GPU $i$ \\
+    $g_i$        & The $i$-th shard of the averaged gradient $g$ \\
+    $K$          & Optimizer-state bytes per parameter \\
+    \bottomrule
+    
+  \end{tabular}
+
+  \caption{Notation used in this section.}
+  \label{tab:notation}
+\end{table}
+
+\begin{definition}[Sharding]
+\label{def:sharding}
+\todo{Splitting a tensor into $N$ disjoint pieces, where rank $i$ owns
+piece $i$.}
+\end{definition}
+
+\begin{definition}[FSDP unit]
+\label{def:unit}
+\todo{A group of layers whose parameters are flattened, sharded,
+gathered, and freed together.}
+\end{definition}
+
+\begin{figure}[ht]
+  \centering
+  \figplaceholder{``Wrap \& Shard'' screenshot (right half cropped)}{5cm}
+  % \includegraphics[width=0.8\linewidth]{figures/wrap_shard.png}
+  \caption{Wrapping a model into FSDP units. Layers~0 and~3 are not
+  wrapped separately and therefore belong to the outer unit, Unit0.
+  \todo{finalise caption}}
+  \label{fig:wrap}
+\end{figure}
+
+\todo{Paragraph referring to \cref{fig:wrap}; point out that Layers 0
+and 3 belong to the outer Unit0.}
+
+\subsection{Model State and Sharding}
+\label{sec:model-state}
+
+\subsubsection{Components of Model State}
+\label{sec:components}
+
+\todo{Parameters, gradients, and optimizer states. For Adam with mixed
+precision, the optimizer state is the fp32 master weights plus the first
+and second moments.}
+
+\subsubsection{Replication in DDP versus Sharding in FSDP}
+\label{sec:ddp-vs-fsdp-layout}
+
+\todo{Paragraph contrasting full replication (DDP) with sharding (FSDP);
+refer to \cref{fig:ddp-fsdp-layout}.}
+
+\begin{figure}[ht]
+  \centering
+  \figplaceholder{DDP vs FSDP memory layout (redrawn from slide 3)}{5cm}
+  % \includegraphics[width=0.9\linewidth]{figures/ddp_vs_fsdp_layout.pdf}
+  \caption{Model-state memory layout under DDP (every GPU holds a full
+  replica) and FSDP (every GPU holds one shard). \todo{finalise caption}}
+  \label{fig:ddp-fsdp-layout}
+\end{figure}
+
+\subsubsection{Flattening and Padding}
+\label{sec:flatten}
+
+\todo{Explain FlatParameter: a unit's parameters are concatenated into
+one 1-D tensor, padded to a multiple of $N$, then split evenly. Refer to
+\cref{fig:flatparam} and \cref{eq:shard-size}.}
+
+\begin{equation}
+  \text{shard size} = \left\lceil \frac{\Psiu}{N} \right\rceil
+  \label{eq:shard-size}
+\end{equation}
+
+\begin{figure}[ht]
+  \centering
+  \figplaceholder{FlatParameter sharding across 16 GPUs
+  (original caption removed)}{5cm}
+  % \includegraphics[width=0.9\linewidth]{figures/flatparam.png}
+  \caption{FlatParameter sharding across 16 GPUs. The symbol $F$ in the
+  figure corresponds to $N$ in our notation. \todo{finalise caption}}
+  \label{fig:flatparam}
+\end{figure}
+
+\subsection{Collective Communication Primitives}
+\label{sec:collectives}
+
+\subsubsection{All-Gather}
+\label{sec:allgather}
+
+\todo{Shards become the full tensor on every rank.}
+
+\begin{equation}
+  V_{\text{AG}} = \frac{N-1}{N}\,|W|
+  \label{eq:allgather}
+\end{equation}
+
+\subsubsection{Reduce-Scatter}
+\label{sec:reducescatter}
+
+\todo{Sum the tensors across ranks; each rank keeps one reduced shard.
+Stress that it is a single collective, not a reduce followed by a
+scatter.}
+
+\begin{equation}
+  V_{\text{RS}} = \frac{N-1}{N}\,|G|
+  \label{eq:reducescatter}
+\end{equation}
+
+\subsubsection{Relation to All-Reduce}
+\label{sec:allreduce}
+
+\todo{All-Reduce = Reduce-Scatter + All-Gather; refer to
+\cref{fig:allreduce}. Mention the figure shows sums while FSDP
+averages.}
+
+\begin{figure}[ht]
+  \centering
+  \figplaceholder{All-Reduce = Reduce-Scatter + All-Gather}{5cm}
+  % \includegraphics[width=0.9\linewidth]{figures/allreduce.pdf}
+  \caption{All-Reduce decomposed into Reduce-Scatter followed by
+  All-Gather. The figure shows sums; FSDP additionally divides by $N$ to
+  obtain the average. \todo{finalise caption}}
+  \label{fig:allreduce}
+\end{figure}
+
+\subsection{Forward Pass}
+\label{sec:forward}
+
+\subsubsection{Why a Layer Needs Full Parameters}
+\label{sec:why-full}
+
+\todo{$y = Wx$ needs all of $W$, not just $W_i$.}
+
+\subsubsection{Gather, Compute, Reshard}
+\label{sec:gather-compute-reshard}
+
+\todo{All-gather $W$, compute, then each rank frees the parameters it
+does not own. The full parameters are transient; the shard is
+persistent.}
+
+\subsection{Backward Pass and Gradient Synchronization}
+\label{sec:backward}
+
+\subsubsection{Re-gathering Parameters}
+\label{sec:regather}
+
+\todo{Parameters must be gathered again because they were resharded
+after the forward pass.}
+
+\subsubsection{Local Gradients}
+\label{sec:local-grads}
+
+\todo{Each GPU computes gradients on a different mini-batch, so the
+gradients differ across GPUs.}
+
+\subsubsection{Synchronization by Reduce-Scatter}
+\label{sec:grad-sync}
+
+\todo{Paragraph introducing \cref{eq:grad-avg} and the worked example in
+\cref{tab:grad-example}.}
+
+\begin{equation}
+  g = \frac{1}{N} \sum_{i=1}^{N} g^{(i)},
+  \qquad \text{rank } i \text{ keeps only } g_i
+  \label{eq:grad-avg}
+\end{equation}
+
+\begin{table}[ht]
+  \centering
+  \caption{Worked four-GPU example of gradient synchronization by
+  Reduce-Scatter (from slide 17). \todo{fill in local gradients}}
+  \label{tab:grad-example}
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    GPU & Local gradient $g^{(i)}$ & Shard kept $g_i$ \\
+    \midrule
+    0 & \todo{} & $1.5$ \\
+    1 & \todo{} & $1.5$ \\
+    2 & \todo{} & $2.0$ \\
+    3 & \todo{} & $1.5$ \\
+    \midrule
+    \multicolumn{3}{@{}l}{Averaged gradient $g = [1.5,\ 1.5,\ 2.0,\ 1.5]$} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Optimizer Step}
+\label{sec:optimizer}
+
+\todo{Each rank updates its own shard locally, because it holds the
+matching parameter, gradient, and optimizer-state shards. No
+communication is needed.}
+
+\subsection{The Complete Training Iteration}
+\label{sec:iteration}
+
+\todo{Complete lead-in sentence ending in a colon, e.g.:}
+\Cref{alg:fsdp} summarises one FSDP training iteration on rank $i$:
+
+\begin{algorithm}[ht]
+  \caption{One FSDP training iteration on rank $i$}
+  \label{alg:fsdp}
+  \begin{algorithmic}[1]
+    \Require Parameter shards $W^{(u)}_i$ and optimizer-state shards for
+      every unit $u = 1,\dots,U$; local mini-batch $x^{(i)}$
+    \Statex \textit{// Forward pass}
+    \For{$u = 1$ \textbf{to} $U$}
+      \State $W^{(u)} \gets \textsc{AllGather}\big(W^{(u)}_i\big)$
+      \State Compute forward of unit $u$ with $W^{(u)}$
+      \State Free all of $W^{(u)}$ except $W^{(u)}_i$ \Comment{reshard}
+    \EndFor
+    \State Compute loss $\mathcal{L}$
+    \Statex \textit{// Backward pass}
+    \For{$u = U$ \textbf{down to} $1$}
+      \State $W^{(u)} \gets \textsc{AllGather}\big(W^{(u)}_i\big)$
+      \State Compute local gradient $g^{(i),u}$ of unit $u$
+      \State Free all of $W^{(u)}$ except $W^{(u)}_i$
+      \State $g^{(u)}_i \gets \textsc{ReduceScatter}\big(g^{(i),u}\big) / N$
+      \State Free $g^{(i),u}$
+    \EndFor
+    \Statex \textit{// Optimizer step (local, no communication)}
+    \For{$u = 1$ \textbf{to} $U$}
+      \State Update $W^{(u)}_i$ using $g^{(u)}_i$ and its optimizer-state shard
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{figure}[ht]
+  \centering
+  \figplaceholder{FSDP workflow diagram}{6cm}
+  % \includegraphics[width=\linewidth]{figures/fsdp_workflow.pdf}
+  \caption{FSDP workflow. \todo{Relabel or explain ``N layers / M
+  layers''; explain or remove the CPU-offload labels.}}
+  \label{fig:workflow}
+\end{figure}
+
+\subsection{Memory Analysis}
+\label{sec:memory}
+
+\subsubsection{Persistent Memory}
+\label{sec:persistent-mem}
+
+\todo{Paragraph: fp16 parameters (2 bytes), fp16 gradients (2 bytes),
+and Adam optimizer state with $K = 12$ (fp32 master weights, first and
+second moments).}
+
+\begin{equation}
+  M_{\text{DDP}} = (2 + 2 + K)\,\Psi = 16\Psi \text{ bytes}
+  \label{eq:mem-ddp}
+\end{equation}
+
+\begin{proposition}
+\label{prop:mem-fsdp}
+Under full sharding across $N$ GPUs, the persistent model-state memory
+per GPU is
+\begin{equation}
+  M_{\text{FSDP}} = \frac{16\Psi}{N} \text{ bytes.}
+  \label{eq:mem-fsdp}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+\todo{Short derivation: each of the three components is split into $N$
+disjoint shards (\cref{def:sharding}), so each rank stores
+$(2+2+K)\Psi/N$ bytes.}
+\end{proof}
+
+\subsubsection{Peak Memory}
+\label{sec:peak-mem}
+
+\todo{Explain the transient terms.}
+
+\begin{equation}
+  M_{\text{peak}} \approx \frac{16\Psi}{N}
+  + \underbrace{(2 + 2)\,\Psiu}_{\text{gathered unit(s)}}
+  + M_{\text{act}}
+  \label{eq:mem-peak}
+\end{equation}
+
+\subsubsection{Worked Example}
+\label{sec:mem-example}
+
+\todo{A 7.5B-parameter model on 64 GPUs: DDP needs
+$16 \times 7.5\times10^{9} \approx 120$\,GB per GPU; full sharding needs
+$120/64 \approx 1.9$\,GB per GPU~\cite{rajbhandari2020zero}.}
+
+\subsection{Communication Analysis and Overlap}
+\label{sec:comm}
+
+\subsubsection{Communication Volume}
+\label{sec:comm-volume}
+
+\todo{DDP: one All-Reduce $=$ RS $+$ AG (\cref{fig:allreduce}), about
+$2\Psi$. FSDP: AG in forward, AG in backward, RS of gradients, about
+$3\Psi$.}
+
+\begin{equation}
+  V_{\text{DDP}} \approx 2\Psi, \qquad
+  V_{\text{FSDP}} \approx 3\Psi, \qquad
+  \frac{V_{\text{FSDP}}}{V_{\text{DDP}}} \approx 1.5
+  \label{eq:comm-volume}
+\end{equation}
+
+\subsubsection{Overlapping Communication with Computation}
+\label{sec:overlap}
+
+\todo{Prefetch unit $i{+}1$ while unit $i$ computes; refer to
+\cref{fig:overlap}.}
+
+\begin{figure}[ht]
+  \centering
+  \figplaceholder{Two-row timeline: compute stream / communication
+  stream (to be drawn)}{4cm}
+  % \includegraphics[width=\linewidth]{figures/overlap_timeline.pdf}
+  \caption{Overlapping communication with computation. While unit $i$
+  computes on the compute stream, the All-Gather for unit $i{+}1$ runs on
+  the communication stream. \todo{finalise caption}}
+  \label{fig:overlap}
+\end{figure}
+
+\subsection{Sharding Strategies}
+\label{sec:strategies}
+
+\todo{Paragraph covering FULL\_SHARD, SHARD\_GRAD\_OP, NO\_SHARD, and
+HYBRID\_SHARD; refer to \cref{tab:strategies}.}
+
+\begin{table}[ht]
+  \centering
+  \caption{FSDP sharding strategies. \todo{check wording}}
+  \label{tab:strategies}
+  \small
+  \begin{tabular}{@{}l>{\raggedright}p{3.2cm}c>{\raggedright\arraybackslash}p{5.2cm}@{}}
+    \toprule
+    Strategy & Sharded state & Reshard after fwd? & Memory / communication effect \\
+    \midrule
+    \texttt{FULL\_SHARD}    & Params, grads, optimizer state & Yes
+      & Lowest memory; $\sim 3\Psi$ communication \\
+    \texttt{SHARD\_GRAD\_OP} & Grads, optimizer state & No
+      & Params stay gathered between fwd and bwd; saves one All-Gather ($\sim 2\Psi$), higher memory \\
+    \texttt{NO\_SHARD}      & Nothing & --
+      & Equivalent to DDP; $16\Psi$ per GPU, $\sim 2\Psi$ communication \\
+    \texttt{HYBRID\_SHARD}  & Full shard within a node, replicate across nodes & Yes
+      & Memory reduced by the intra-node group size; slow inter-node links only carry gradient All-Reduce \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \figplaceholder{(Optional) Hybrid sharding, from the VLDB paper}{5cm}
+  % \includegraphics[width=0.9\linewidth]{figures/hybrid_shard.png}
+  \caption{Hybrid sharding~\cite{zhao2023fsdp}. \todo{finalise caption
+  or remove figure}}
+  \label{fig:hybrid}
+\end{figure}
+
+\subsection{Trade-offs: FSDP versus DDP}
+\label{sec:tradeoffs}
+
+\todo{Paragraph introducing \cref{tab:ddp-vs-fsdp} (extends slide 19).}
+
+\begin{table}[ht]
+  \centering
+  \caption{DDP versus FSDP (full sharding). \todo{check numbers}}
+  \label{tab:ddp-vs-fsdp}
+  \small
+  \begin{tabular}{@{}>{\raggedright}p{3.6cm}>{\raggedright}p{4.8cm}>{\raggedright\arraybackslash}p{4.8cm}@{}}
+    \toprule
+    & DDP & FSDP \\
+    \midrule
+    Model-state memory per GPU & $16\Psi$ & $16\Psi / N$ \\
+    How parameters are obtained & Full local replica & All-Gather per unit, just in time \\
+    Gradient collective & All-Reduce & Reduce-Scatter \\
+    Communication volume & $\sim 2\Psi$ & $\sim 3\Psi$ ($1.5\times$) \\
+    Main bottleneck & Memory & Communication bandwidth \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\todo{Closing summary paragraph: FSDP trades about $1.5\times$
+communication for roughly $N$-fold lower persistent memory, and overlap
+(\cref{sec:overlap}) hides part of that extra cost.}
+
+
+\begin{thebibliography}{9}
+\bibitem{rajbhandari2020zero}
+S.~Rajbhandari, J.~Rasley, O.~Ruwase, and Y.~He.
+\newblock ZeRO: Memory optimizations toward training trillion parameter
+  models.
+\newblock In \emph{SC20: International Conference for High Performance
+  Computing, Networking, Storage and Analysis}, 2020.
+
+\bibitem{zhao2023fsdp}
+Y.~Zhao, A.~Gu, R.~Varma, L.~Luo, C.-C. Huang, M.~Xu, L.~Wright,
+  H.~Shojanazeri, M.~Ott, S.~Shleifer, A.~Desmaison, C.~Balioglu,
+  P.~Damania, B.~Nguyen, G.~Chauhan, Y.~Hao, A.~Mathews, and S.~Li.
+\newblock PyTorch FSDP: Experiences on scaling fully sharded data
+  parallel.
+\newblock \emph{Proceedings of the VLDB Endowment}, 16(12):3848--3860,
+  2023.
+\end{thebibliography}
+
+\end{document}
