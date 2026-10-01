@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.22)  2 OCT 2026 00:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.22)  2 OCT 2026 00:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -456,18 +456,18 @@ Package hyperref Info: Link coloring OFF on input line 20.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 44.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 42.
  (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 44.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 42.
  (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 <wrap_shard.png, id=82, 487.8225pt x 264.99pt>
 File: wrap_shard.png Graphic file (type png)
 <use wrap_shard.png>
-Package pdftex.def Info: wrap_shard.png  used on input line 80.
+Package pdftex.def Info: wrap_shard.png  used on input line 78.
 (pdftex.def)             Requested size: 375.80544pt x 204.14401pt.
  [1
 
@@ -475,40 +475,40 @@ Package pdftex.def Info: wrap_shard.png  used on input line 80.
 <ddp.png, id=103, 426.59375pt x 323.2075pt>
 File: ddp.png Graphic file (type png)
 <use ddp.png>
-Package pdftex.def Info: ddp.png  used on input line 143.
+Package pdftex.def Info: ddp.png  used on input line 141.
 (pdftex.def)             Requested size: 211.38832pt x 160.15834pt.
 <fsdp.png, id=104, 384.43625pt x 295.1025pt>
 File: fsdp.png Graphic file (type png)
 <use fsdp.png>
-Package pdftex.def Info: fsdp.png  used on input line 149.
+Package pdftex.def Info: fsdp.png  used on input line 147.
 (pdftex.def)             Requested size: 211.38832pt x 162.27084pt.
  [2 <./wrap_shard.png>]
 <flat-parameters.png, id=117, 443.15562pt x 271.0125pt>
 File: flat-parameters.png Graphic file (type png)
 <use flat-parameters.png>
-Package pdftex.def Info: flat-parameters.png  used on input line 185.
+Package pdftex.def Info: flat-parameters.png  used on input line 183.
 (pdftex.def)             Requested size: 352.31625pt x 215.47044pt.
  [3 <./ddp.png> <./fsdp.png> <./flat-parameters.png>]
 <all-gather.png, id=129, 1147.28625pt x 357.335pt>
 File: all-gather.png Graphic file (type png)
 <use all-gather.png>
-Package pdftex.def Info: all-gather.png  used on input line 224.
+Package pdftex.def Info: all-gather.png  used on input line 222.
 (pdftex.def)             Requested size: 469.75502pt x 146.30655pt.
  [4 <./all-gather.png>]
 <reduce-scatter.png, id=141, 977.6525pt x 329.23pt>
 File: reduce-scatter.png Graphic file (type png)
 <use reduce-scatter.png>
-Package pdftex.def Info: reduce-scatter.png  used on input line 355.
+Package pdftex.def Info: reduce-scatter.png  used on input line 353.
 (pdftex.def)             Requested size: 422.77664pt x 142.37494pt.
  [5]
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 379.
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 377.
  [6 <./reduce-scatter.png>] [7] (./report.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: E2839B41D530401B94FFBA82A48DC6CB;3622.
+(rerunfilecheck)             Checksum: 8F3C3E135CD64072ED14A627F96A454A;3622.
  ) 
 Here is how much of TeX's memory you used:
  14787 strings out of 467525
