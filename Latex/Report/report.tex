@@ -36,7 +36,7 @@ model at once.
 \subsection{Notation and Definitions}
 \label{sec:notation}
 
-\Cref{tab:notation} lists the symbols we use in this section.
+~\ref{tab:notation} lists the symbols we use in this section.
 
 \begin{table}[ht]
   \centering
@@ -84,7 +84,7 @@ model at once.
   \label{fig:wrap}
 \end{figure}
 
-\Cref{fig:wrap} shows how we split a six-layer model into FSDP units.
+~\ref{fig:wrap} shows how we split a six-layer model into FSDP units.
 Unit~1 holds Layers~1 and~2. Unit~2 holds Layers~4 and~5. FSDP flattens
 and shards each of these units on its own. Unit~0 wraps the whole
 model. It picks up every layer that no inner unit claims, which here
@@ -130,7 +130,7 @@ its own shard $W_i$.
 
 FSDP shards the gradients and the optimizer states in the same way.
 Rank $i$ keeps only the gradient shard $g_i$ and the optimizer state for
-the parameters in $W_i$. \Cref{fig:ddp-fsdp-layout} compares the two
+the parameters in $W_i$. ~\ref{fig:ddp-fsdp-layout} compares the two
 layouts. In DDP each GPU holds everything. In FSDP each GPU holds one
 $N$-th of everything. This is why FSDP can train models that DDP cannot
 fit.
@@ -167,14 +167,14 @@ The length of the \texttt{FlatParameter} is $\Psiu$. This number may
 not divide evenly by $N$. When it does not, FSDP adds a few zeros at the
 end (padding) until the length is a multiple of $N$. Then it cuts the
 tensor into $N$ equal shards. Each shard has the size given by
-\cref{eq:shard-size}.
+~\ref{eq:shard-size}.
 
 \begin{equation}
   \text{shard size} = \left\lceil \frac{\Psiu}{N} \right\rceil
   \label{eq:shard-size}
 \end{equation}
 
-\Cref{fig:flatparam} shows an example with 16 GPUs. The unit has a
+~\ref{fig:flatparam} shows an example with 16 GPUs. The unit has a
 $3 \times 4$ weight (12 values) and a bias with 3 values, so
 $\Psiu = 15$. FSDP joins them into one tensor of length 15 and adds one
 padding value to reach 16. Each GPU then gets exactly one value. Ranks
@@ -204,18 +204,20 @@ All-Gather turns shards into a full tensor. Each rank starts with its
 own shard $W_i$. Each rank sends its shard to every other rank. At the
 end, every rank holds the full tensor $W$.
 
-\Cref{fig:allgather} shows this for four GPUs. Before the call, each
+~\ref{fig:allgather} shows this for four GPUs. Before the call, each
 GPU stores only $|W|/N$ values. This shard is persistent: the GPU keeps
 it for the whole training run. After the call, each GPU holds all $|W|$
 values. This full copy is transient: the GPU frees it as soon as it
 finishes using it. Each rank already has its own shard, so it only
-receives the other $N-1$ shards. \Cref{eq:allgather} gives the amount
+receives the other $N-1$ shards. ~\ref{eq:allgather} gives the amount
 of data each rank receives.
 
 \begin{equation}
   V_{\text{AG}} = \frac{N-1}{N}\,|W|
   \label{eq:allgather}
 \end{equation}
+
+\vspace{1\baselineskip}
 
 \begin{figure}[ht]
   \centering
@@ -312,7 +314,7 @@ agree on one gradient.
 \label{sec:grad-sync}
 
 FSDP uses the average of all local gradients as the true gradient.
-\Cref{eq:grad-avg} defines it. Rank $i$ does not need the whole average.
+~\ref{eq:grad-avg} defines it. Rank $i$ does not need the whole average.
 It only updates $W_i$, so it only needs the matching shard $g_i$. A
 Reduce-Scatter gives each rank exactly that shard. After the call, FSDP
 divides by $N$ to turn the sum into an average.
@@ -323,7 +325,7 @@ divides by $N$ to turn the sum into an average.
   \label{eq:grad-avg}
 \end{equation}
 
-\Cref{tab:grad-example} and \cref{fig:reducescatter} show a small
+~\ref{tab:grad-example} and ~\ref{fig:reducescatter} show a small
 example with four GPUs. Each GPU computes a local gradient with four
 values. The average of the four vectors is $[1.5,\ 1.5,\ 2.0,\ 1.5]$.
 GPU~$i$ keeps only the $i$-th value of this average. For example, GPU~2
@@ -350,7 +352,7 @@ keeps $(0 + 4 + 1 + 3)/4 = 2.0$.
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=\linewidth]{reduce-scatter.png}
+  \includegraphics[width=0.9\linewidth]{reduce-scatter.png}
   \caption{Gradient synchronization on four GPUs. The local gradients
     are averaged element by element, and each GPU keeps one shard of the
   result. The symbol $G_i$ in the figure is $g_i$ in our notation.}
@@ -370,7 +372,7 @@ model, which is the same model that DDP would produce.
 \subsection{The Complete Training Iteration}
 \label{sec:iteration}
 
-\Cref{alg:fsdp} puts all the steps together. It shows one FSDP training
+~\ref{alg:fsdp} puts all the steps together. It shows one FSDP training
 iteration on rank $i$:
 
 \begin{algorithm}[ht]
